@@ -39,10 +39,13 @@ A documentação de apoio ao planejamento está em [docs/planejamento.md](docs/p
 | [Especificação de requisitos](docs/requisitos.md) | Requisitos funcionais, regras de negócio, requisitos técnicos e matriz de rastreabilidade. |
 | [Entregáveis acadêmicos](docs/entregaveis.md) | Artefatos esperados e critérios de evidência. |
 | [Fluxo de Git](docs/fluxo-git.md) | Branches, commits, pull requests, releases e vínculo com o Jira. |
+| [Documento de Visão](docs/visao/documento-de-visao.md) | Contexto, escopo, usuários, necessidades e restrições do SGV. |
+| [Caso de uso UC01](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Fluxo de registro de viagem, exceções e diagrama UML relacionado. |
+| [Arquitetura da Sprint 0](docs/arquitetura/README.md) | Diagrama e explicação de React, Spring Boot, PostgreSQL e Docker. |
 
 ## Arquitetura de exemplo pretendida
 
-A aplicação da Sprint 0 demonstrará a colaboração entre um frontend em React, um backend em Java e Docker. O PostgreSQL poderá ser adotado como camada de persistência após validação do grupo com o Product Owner e o professor.
+A aplicação da Sprint 0 demonstra a colaboração entre um frontend em React + TypeScript, uma API REST em Spring Boot (Java 21), PostgreSQL e Docker Compose. O fluxo demonstrado registra viagens em rascunho, permite submetê-las para análise e registra decisões de aprovação ou rejeição.
 
 O exemplo é intencionalmente limitado. Seu objetivo é apresentar um ambiente que o grupo compreenda, consiga executar localmente e possa evoluir após a definição dos requisitos reais.
 
@@ -50,19 +53,48 @@ O exemplo é intencionalmente limitado. Seu objetivo é apresentar um ambiente q
 
 ```text
 .
-├── docs/
-│   ├── planejamento.md
-│   └── sprint-0/
-│       └── README.md
-├── example-app/
-│   ├── frontend/
-│   └── backend/
+├── backend/                 # API REST Spring Boot
+├── frontend/                # Interface React + TypeScript
+├── docs/                    # Artefatos acadêmicos e diagramas
+├── docker-compose.yml       # Orquestração local de frontend, backend e PostgreSQL
+├── .env.example             # Referência de variáveis de ambiente locais
 ├── CONTRIBUTING.md
 ├── README.md
 └── .gitignore
 ```
 
-As pastas de código serão adicionadas somente quando contiverem material revisado. Dependências geradas, credenciais, arquivos de ambiente, dados pessoais e materiais de outras disciplinas não devem ser versionados.
+Dependências geradas, credenciais, arquivos de ambiente reais, dados pessoais e materiais de outras disciplinas não devem ser versionados.
+
+## Execução local do exemplo
+
+### Opção A — Docker Compose
+
+Em uma máquina com Docker e Docker Compose disponíveis, execute:
+
+```bash
+docker compose up --build
+```
+
+Depois, abra `http://localhost:5173`. O PostgreSQL utiliza um volume nomeado (`postgres_data`) para manter os dados entre reinicializações dos containers.
+
+### Opção B — Desenvolvimento local
+
+Inicie um PostgreSQL local com base nas variáveis de `.env.example`. Em terminais separados, execute:
+
+```bash
+# backend
+cd backend
+mvn spring-boot:run
+
+# frontend
+cd frontend
+npm install
+npm run dev
+```
+
+O frontend local ficará disponível em `http://localhost:5173` e encaminhará chamadas para `/api` ao backend na porta `8080`.
+
+> O demonstrador visual também contém dados de cenário para apresentação da Sprint 0. A persistência real é fornecida pelos endpoints Spring Boot quando o ambiente com PostgreSQL estiver em execução.
 
 ## Rastreabilidade entre Jira e GitHub
 

@@ -11,6 +11,10 @@ Esta pasta concentra os documentos acadêmicos do **Sistema de Gestão de Viagen
 | [entregaveis.md](entregaveis.md) | Artefatos esperados pela disciplina e critérios para considerá-los entregues. |
 | [fluxo-git.md](fluxo-git.md) | Estratégia de branches, commits, pull requests, releases e vínculo com o Jira. |
 | [sprint-0/README.md](sprint-0/README.md) | Objetivo, entregas e evidências da Sprint 0. |
+| [Visão do SGV](visao/documento-de-visao.md) | Documento de Visão usado como base acadêmica para a Sprint 0. |
+| [Caso de uso UC01](casos-de-uso/UC01-Registrar-Viagem.md) | Especificação do registro de viagem, com fluxos e exceções. |
+| [Diagrama de caso de uso](casos-de-uso/diagrama-caso-de-uso.puml) | Fonte PlantUML do diagrama de atores e funcionalidades. |
+| [Arquitetura de exemplo](arquitetura/README.md) | Diagrama e explicação da composição React, Spring Boot, PostgreSQL e Docker. |
 
 ## Fontes de verdade
 

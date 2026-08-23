@@ -1,0 +1,33 @@
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: sgv
+      POSTGRES_USER: sgv
+      POSTGRES_PASSWORD: sgv
+    ports: ["5432:5432"]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sgv -d sgv"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/sgv
+      SPRING_DATASOURCE_USERNAME: sgv
+      SPRING_DATASOURCE_PASSWORD: sgv
+      CORS_ORIGIN: http://localhost:5173
+    ports: ["8080:8080"]
+    depends_on:
+      database:
+        condition: service_healthy
+  frontend:
+    build: ./frontend
+    ports: ["5173:80"]
+    depends_on: [backend]
+volumes:
+  postgres_data:

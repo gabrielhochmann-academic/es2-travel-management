@@ -1,0 +1,8 @@
+flowchart LR
+    user["Colaborador / Gestor"] --> browser["Frontend React\nTypeScript + Vite"]
+    browser -->|"REST /api"| api["Backend Spring Boot\nJava 21"]
+    api -->|"JPA"| db[("PostgreSQL 16")]
+    compose["Docker Compose"] -. orquestra .-> browser
+    compose -. orquestra .-> api
+    compose -. orquestra .-> db
+    db --> volume[("Volume persistente")]
