@@ -19,19 +19,12 @@ For that reason, the documents and application in this repository are **examples
 
 
 | Sprint 0 deliverable | Current purpose |
-
 |---|---|
-
 | GitHub repository | Single private workspace for group code, documentation, and contribution history. |
-
 | Vision document | Example of a vision-document structure, to be refined after Product Owner elicitation. |
-
 | Use case | Example of a travel-related use case, also subject to revision after elicitation. |
-
 | Architecture example | Small application demonstrating the planned development environment and layers. |
-
 | Kanban | Single Jira board used to track work, responsibilities, and Sprint 0 progress. |
-
 
 
 ## Intended architecture example
@@ -89,33 +82,18 @@ This private repository is the group’s single source of truth for code, review
 
 
 - **Jira:** [ES2 — Sistema de Gestão de Viagens](https://gabrielhochmann.atlassian.net/jira/software/projects/ES2/boards/1/backlog)
-- 
 - **Repository:** `gabrielhochmann-academic/es2-travel-management`
-- 
 - **Jira integration:** GitHub for Atlassian is restricted to this repository only.
-- 
 
 
 ### Access and roles
 
-
-
-| Person or team | Current status | Repository access |
-
+| Person or team | Role | Repository access |
 |---|---|---|
-
-| Gabriel Hochmann | Organization owner and `es2-team` member | Administrative control as owner |
-
-| `es2-team` | Secret ES2 collaboration team | Write access to this repository only |
-
-| Diogo (`diogorafaelpasa`) | Organization membership and repository invitations pending acceptance | Write access is pending through the accepted invitation and team membership |
-
-| Angelo (`AngelV-c`) | Organization membership invitation pending acceptance; current outside collaborator | Active direct Write access; team access will apply after membership acceptance |
-
-
-
-> Pending invitations do not represent accepted membership or evidence of a contribution. Repository history, pull requests, and Jira work items remain the source of truth for individual work.
-> 
+| Gabriel Hochmann | Organization owner | Administrative access |
+| `es2-team` | ES2 collaboration team | Write access |
+| Diogo (`diogorafaelpasa`) | Team member | Write access |
+| Angelo (`AngelV-c`) | Team member | Write access |
 
 
 
