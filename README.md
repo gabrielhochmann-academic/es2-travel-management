@@ -31,6 +31,15 @@ O Product Backlog segue a prioridade acadêmica definida para a disciplina. O de
 
 A documentação de apoio ao planejamento está em [docs/planejamento.md](docs/planejamento.md). Itens que ainda não foram refinados não devem ser tratados como requisitos definitivos.
 
+## Documentação do projeto
+
+| Documento | Conteúdo |
+|---|---|
+| [Índice da documentação](docs/README.md) | Mapa dos documentos acadêmicos do repositório. |
+| [Especificação de requisitos](docs/requisitos.md) | Requisitos funcionais, regras de negócio, requisitos técnicos e matriz de rastreabilidade. |
+| [Entregáveis acadêmicos](docs/entregaveis.md) | Artefatos esperados e critérios de evidência. |
+| [Fluxo de Git](docs/fluxo-git.md) | Branches, commits, pull requests, releases e vínculo com o Jira. |
+
 ## Arquitetura de exemplo pretendida
 
 A aplicação da Sprint 0 demonstrará a colaboração entre um frontend em React, um backend em Java e Docker. O PostgreSQL poderá ser adotado como camada de persistência após validação do grupo com o Product Owner e o professor.
