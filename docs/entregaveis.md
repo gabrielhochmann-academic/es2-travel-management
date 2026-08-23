@@ -13,7 +13,7 @@ Este documento traduz os entregáveis esperados do SGV em artefatos verificávei
 | Diagramas UML | `docs/uml/` | Diagramas de classes e de sequência com fonte editável e imagem exportada. |
 | Protótipos de telas | `docs/prototipos/` | Link ou arquivos dos protótipos, identificando telas e fluxos cobertos. |
 | Código-fonte | `frontend/` e `backend/` | Código versionado, revisado e associado às issues implementadas. |
-| Scripts de banco de dados | `database/` | Scripts de criação, migração ou carga compatíveis com PostgreSQL. |
+| Scripts de banco de dados | `database/001_create_trips.sql` | Script inicial de criação da tabela de viagens, compatível com PostgreSQL. |
 | Configurações Docker | Raiz do projeto e diretórios de serviços | Arquivos de containerização e instruções reais de execução. |
 | Sistema funcional local | `README.md` e evidência no Jira | Passo a passo validado, serviços necessários e resultado do teste local. |
 
