@@ -26,10 +26,10 @@ O nome da branch permanece conforme a convenção solicitada. A chave do Jira de
 
 | Branch | Quando criar | Finalidade |
 |---|---|---|
-| `release/1.0.0` | Quando o conjunto de planejamento selecionado para a primeira entrega estiver integrado e pronto para estabilização. | Validar, corrigir e preparar a primeira versão demonstrável. |
-| `release/2.0.0` | Quando o segundo conjunto de funcionalidades estiver integrado e pronto para estabilização. | Validar, corrigir e preparar a segunda versão demonstrável. |
+| `release/1.0.0` | Branch prevista para a primeira versão demonstrável. | Validar, corrigir e preparar a primeira versão demonstrável. |
+| `release/2.0.0` | Branch prevista para a segunda versão demonstrável. | Validar, corrigir e preparar a segunda versão demonstrável. |
 
-Branches de release **não devem ser abertas antecipadamente** sem conteúdo integrado. Elas representam uma etapa real de estabilização, não um marcador de planejamento.
+As duas branches de release são mantidas no repositório para atender à estrutura solicitada pela disciplina. Elas não devem receber desenvolvimento cotidiano: somente ajustes de estabilização, documentação de versão e correções necessárias para a entrega correspondente. A criação antecipada não representa uma release concluída nem uma entrega aprovada.
 
 ## Fluxo de trabalho
 
@@ -41,8 +41,8 @@ main
       ├── feature/aprovar-viagem
       └── feature/dashboard
 
-release/1.0.0  ← criada a partir de develop quando a primeira versão estiver pronta
-release/2.0.0  ← criada a partir de develop quando a segunda versão estiver pronta
+release/1.0.0  ← linha de estabilização da primeira versão
+release/2.0.0  ← linha de estabilização da segunda versão
 ```
 
 1. Crie ou consulte a issue do Jira antes de iniciar uma funcionalidade.
@@ -50,7 +50,7 @@ release/2.0.0  ← criada a partir de develop quando a segunda versão estiver p
 3. Realize commits pequenos, coerentes e rastreáveis.
 4. Abra pull request para `develop`, descrevendo a entrega e os testes realizados.
 5. Após revisão e integração, vincule a evidência à issue do Jira.
-6. Quando um conjunto de funcionalidades estiver estabilizado, crie a branch de release a partir de `develop`.
+6. Quando um conjunto de funcionalidades estiver estabilizado, utilize a branch de release correspondente para validação e ajustes controlados.
 7. Após a validação da release, integre o resultado em `main` e registre a versão entregue.
 
 ## Convenções de commit e pull request
