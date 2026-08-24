@@ -1,7 +1,3 @@
-/**
- * Style reminder — Dossiê de Operações: modernismo editorial brasileiro,
- * rastreabilidade explícita, coluna de navegação e dados de demonstração honestos.
- */
 import { useMemo, useState } from "react";
 import {
   ArrowUpRight,
@@ -140,7 +136,7 @@ export default function Home() {
     setActiveTrip(id);
     setForm({ destination: "", start: "", end: "", reason: "", transport: "Terrestre" });
     setShowForm(false);
-    setNotice(`${id} foi registrado como rascunho. No ambiente completo, a ação será persistida no PostgreSQL.`);
+    setNotice(`${id} foi registrado como rascunho.`);
   }
 
   return (
@@ -163,7 +159,7 @@ export default function Home() {
 
         <div className="rail-course-note">
           <span className="note-label">ESII · SPRINT 0</span>
-          <p>Ambiente de demonstração preparado para o refinamento com o Product Owner.</p>
+          <p>Acompanhe o registro e a situação das viagens corporativas.</p>
           <div className="course-progress"><span /></div>
           <small>Estrutura técnica em organização</small>
         </div>
@@ -179,7 +175,7 @@ export default function Home() {
         <header className="topline">
           <div className="breadcrumbs"><span>SGV</span><ChevronRight size={14} /><strong>Visão operacional</strong></div>
           <div className="header-actions">
-            <span className="demo-pill"><Sparkles size={14} /> Cenário demonstrativo — Sprint 0</span>
+            <span className="demo-pill"><Sparkles size={14} /> Sistema de Gestão de Viagens</span>
             <button className="primary-action" onClick={() => setShowForm(true)}><Plus size={17} /> Nova viagem</button>
           </div>
         </header>
@@ -188,10 +184,10 @@ export default function Home() {
           <div className="intro-copy">
             <p className="eyebrow"><Compass size={15} /> OPERAÇÃO EM FOCO</p>
             <h1>Planeje a próxima decisão<br /><em>antes de abrir a próxima viagem.</em></h1>
-            <p className="intro-text">Uma leitura única para registrar, acompanhar e decidir. Este exemplo demonstra o fluxo central do SGV sem antecipar os refinamentos do Product Owner.</p>
+            <p className="intro-text">Registre, acompanhe e analise as viagens corporativas em um único ambiente.</p>
             <div className="intro-meta">
               <div><span>Fluxo</span><b>Rascunho → Solicitação → Decisão</b></div>
-              <div><span>Persistência</span><b>PostgreSQL · planejado</b></div>
+              <div><span>Persistência</span><b>PostgreSQL</b></div>
             </div>
           </div>
           <div className="atlas-card" aria-label="Ilustração editorial de rotas">
@@ -204,13 +200,13 @@ export default function Home() {
           <div className="metric"><span>VIAGENS REGISTRADAS</span><b>{String(metrics.total).padStart(2, "0")}</b><small>no cenário de hoje</small></div>
           <div className="metric"><span>PARA ANÁLISE</span><b>{String(metrics.pending).padStart(2, "0")}</b><small>aguardando decisão</small></div>
           <div className="metric"><span>JÁ APROVADAS</span><b>{String(metrics.approved).padStart(2, "0")}</b><small>com gasto liberado</small></div>
-          <div className="metric highlighted"><span>VALOR PREVISTO</span><b>{formatCurrency(metrics.forecast)}</b><small>somatório demonstrativo</small></div>
+          <div className="metric highlighted"><span>VALOR PREVISTO</span><b>{formatCurrency(metrics.forecast)}</b><small>estimativa consolidada</small></div>
         </section>
 
         <section id="viagens" className="content-row">
           <div className="section-heading">
             <div><p className="eyebrow">REGISTROS RECENTES</p><h2>Viagens em acompanhamento</h2></div>
-            <button className="text-action" onClick={() => setNotice("Os filtros serão conectados à API REST no exemplo Spring Boot.")}>Filtrar registros <ArrowUpRight size={16} /></button>
+            <button className="text-action" onClick={() => setNotice("Selecione uma viagem para consultar os detalhes.")}>Consultar detalhes <ArrowUpRight size={16} /></button>
           </div>
 
           <div className="travel-ledger">
@@ -252,16 +248,16 @@ export default function Home() {
             <div className="decision-bar">
               <div><ShieldCheck size={18} /><span><b>Regra de negócio em demonstração</b><small>Somente viagens aprovadas poderão receber despesas.</small></span></div>
               {selectedTrip.status === "Rascunho" && <button className="outline-action" onClick={() => updateStatus(selectedTrip.id, "Solicitada", `${selectedTrip.id} foi submetida para análise.`)}><Send size={16} /> Submeter</button>}
-              {selectedTrip.status === "Solicitada" && <div className="decision-buttons"><button className="approve-action" onClick={() => updateStatus(selectedTrip.id, "Aprovada", `${selectedTrip.id} foi aprovada para o cenário demonstrativo.`)}><Check size={16} /> Aprovar</button><button className="reject-action" onClick={() => updateStatus(selectedTrip.id, "Rejeitada", `${selectedTrip.id} foi rejeitada. No produto, a justificativa será obrigatória.`)}><X size={16} /> Rejeitar</button></div>}
+              {selectedTrip.status === "Solicitada" && <div className="decision-buttons"><button className="approve-action" onClick={() => updateStatus(selectedTrip.id, "Aprovada", `${selectedTrip.id} foi aprovada.`)}><Check size={16} /> Aprovar</button><button className="reject-action" onClick={() => updateStatus(selectedTrip.id, "Rejeitada", `${selectedTrip.id} foi rejeitada.`)}><X size={16} /> Rejeitar</button></div>}
               {selectedTrip.status === "Aprovada" && <span className="ready-copy"><BadgeCheck size={17} /> Despesas liberadas</span>}
             </div>
           </article>
 
           <aside className="margin-note">
             <span className="note-label">NOTA DE MARGEM</span>
-            <h3>O que este exemplo prova amanhã?</h3>
-            <p>O fluxo de cadastro, estado e decisão está visível. A mesma estrutura será conectada à API REST, ao PostgreSQL e aos containers Docker.</p>
-            <ul><li><Check size={15} /> Frontend React</li><li><Check size={15} /> API Spring Boot</li><li><Check size={15} /> Persistência PostgreSQL</li><li><TimerReset size={15} /> Evidência Docker em preparação</li></ul>
+            <h3>Recursos do sistema</h3>
+            <p>O SGV reúne o cadastro de viagens, o acompanhamento de situações e a organização das informações necessárias para análise.</p>
+            <ul><li><Check size={15} /> Frontend React</li><li><Check size={15} /> API Spring Boot</li><li><Check size={15} /> Persistência PostgreSQL</li><li><TimerReset size={15} /> Execução com Docker</li></ul>
           </aside>
         </section>
 

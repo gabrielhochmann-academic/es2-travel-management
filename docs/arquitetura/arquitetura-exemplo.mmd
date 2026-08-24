@@ -1,8 +1,11 @@
 flowchart LR
-    user["Colaborador / Gestor"] --> browser["Frontend React\nTypeScript + Vite"]
-    browser -->|"REST /api"| api["Backend Spring Boot\nJava 21"]
-    api -->|"JPA"| db[("PostgreSQL 16")]
-    compose["Docker Compose"] -. orquestra .-> browser
-    compose -. orquestra .-> api
-    compose -. orquestra .-> db
-    db --> volume[("Volume persistente")]
+    user["Colaborador"] --> frontend["Frontend React\nNginx · porta 5173"]
+    frontend -->|"/api"| backend["API Spring Boot\nporta 8080"]
+    backend -->|"JPA / JDBC"| database[("PostgreSQL 16\nporta 5432")]
+    database --> volume[("Volume postgres_data")]
+
+    subgraph compose["Docker Compose"]
+      frontend
+      backend
+      database
+    end
