@@ -34,6 +34,14 @@
 - A viagem é armazenada com situação **Rascunho**.
 - A viagem fica disponível para consulta e posterior submissão para análise.
 
+## Casos de uso relacionados
+
+| Código | Caso de uso | Ator principal | Relação com UC01 |
+|---|---|---|---|
+| UC02 | Consultar viagem | Colaborador | Permite visualizar uma viagem registrada. |
+| UC03 | Submeter viagem para análise | Colaborador | Altera a situação de Rascunho para Solicitada. |
+| UC04 | Decidir solicitação de viagem | Gestor | Aprova ou rejeita uma viagem submetida. |
+
 ## Dados do cadastro
 
 | Dado | Obrigatório |
@@ -45,8 +53,8 @@
 | Meio de transporte | Sim |
 | Responsável | Sim |
 
-## Diagrama relacionado
+## Diagrama do exemplo técnico
 
 ![Diagrama de caso de uso UC01](diagrama-caso-de-uso.png)
 
-A fonte editável do diagrama está em [diagrama-caso-de-uso.puml](diagrama-caso-de-uso.puml).
+O diagrama apresenta somente os quatro casos de uso expostos pelo exemplo técnico. A fonte editável está em [diagrama-caso-de-uso.puml](diagrama-caso-de-uso.puml).
