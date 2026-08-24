@@ -5,10 +5,17 @@ skinparam packageStyle rectangle
 skinparam actorStyle stickman
 
 actor "Colaborador" as Colaborador
+actor "Gestor" as Gestor
 
 rectangle "Sistema de Gestão de Viagens" {
   usecase "Registrar viagem" as UC01
+  usecase "Consultar viagem" as UC02
+  usecase "Submeter viagem\npara análise" as UC03
+  usecase "Decidir solicitação\nde viagem" as UC04
 }
 
 Colaborador --> UC01
+Colaborador --> UC02
+Colaborador --> UC03
+Gestor --> UC04
 @enduml
