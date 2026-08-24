@@ -18,7 +18,7 @@ O Sistema de Gestão de Viagens (SGV) organiza o registro e o acompanhamento de 
 | Artefato | Descrição |
 |---|---|
 | [Requisitos iniciais](docs/requisitos.md) | Requisitos e regras utilizados no exemplo técnico. |
-| [Documento de Visão](docs/visao/documento-de-visao.pdf) | Versão em PDF do contexto, objetivo, escopo, usuários e restrições do sistema. |
+| [Documento de Visão](docs/visao/Documento-de-Visao-SGV.docx) | Documento formal com contexto, objetivo, escopo, usuários e restrições do sistema. |
 | [UC01 — Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Cadastro de viagem em rascunho e fluxos relacionados. |
 | [Diagrama de caso de uso](docs/casos-de-uso/diagrama-caso-de-uso.png) | Representação UML dos fluxos do exemplo técnico. |
 | [Arquitetura](docs/arquitetura/README.md) | Organização do frontend, backend, banco de dados e Docker Compose. |
