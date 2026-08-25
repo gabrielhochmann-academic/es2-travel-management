@@ -1,5 +1,5 @@
--- Estrutura inicial de persistência do exemplo da Sprint 0.
--- O modelo será refinado após a validação com o Product Owner.
+-- Estrutura da tabela de viagens corporativas do SGV.
+-- Executada na inicialização de uma base PostgreSQL nova.
 CREATE TABLE IF NOT EXISTS trips (
     id UUID PRIMARY KEY,
     destination VARCHAR(255) NOT NULL,
