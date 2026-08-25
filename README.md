@@ -32,7 +32,6 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 
 | Artefato | O que ele comunica |
 |---|---|
-| [Central de documentação](docs/README.md) | Mapa dos artefatos e melhor ponto de partida para cada público. |
 | [Documento de Visão](docs/visao/Documento-de-Visao-SGV.docx) | Problema, valor, escopo, usuários e prioridades do SGV. |
 | [Requisitos do produto](docs/requisitos.md) | Capacidades, regras de negócio e restrições técnicas. |
 | [UC01 - Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Jornada principal do colaborador para iniciar uma solicitação. |
@@ -49,7 +48,7 @@ Antes de iniciar os serviços pela primeira vez, crie a configuração local a p
 cp .env.example .env
 ```
 
-Abra o arquivo `.env` e ajuste a senha local do PostgreSQL. Esse arquivo é ignorado pelo Git e não deve ser compartilhado. Consulte o [guia de configuração de ambiente](docs/ambiente.md) para os cuidados com credenciais e volumes existentes.
+Abra o arquivo `.env` e ajuste a senha local do PostgreSQL. Esse arquivo é ignorado pelo Git e não deve ser compartilhado. Se já houver um volume `postgres_data` criado com outra credencial, mantenha a configuração compatível ou recrie o ambiente com `docker compose down -v` antes de subir novamente. Esse comando remove os dados locais do banco.
 
 Com o **Docker Desktop** em execução, abra um terminal na raiz do repositório e execute:
 
