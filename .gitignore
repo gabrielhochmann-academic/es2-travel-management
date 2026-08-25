@@ -8,8 +8,10 @@ frontend/*.tsbuildinfo
 # Backend
 backend/target/
 
-# Ambiente local
+# Ambiente local e credenciais
 .env
+.env.*
+!.env.example
 *.log
 .DS_Store
 

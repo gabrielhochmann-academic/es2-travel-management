@@ -43,6 +43,14 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 
 ## Execução local
 
+Antes de iniciar os serviços pela primeira vez, crie a configuração local a partir do modelo versionado:
+
+```bash
+cp .env.example .env
+```
+
+Abra o arquivo `.env` e ajuste a senha local do PostgreSQL. Esse arquivo é ignorado pelo Git e não deve ser compartilhado. Consulte o [guia de configuração de ambiente](docs/ambiente.md) para os cuidados com credenciais e volumes existentes.
+
 Com o **Docker Desktop** em execução, abra um terminal na raiz do repositório e execute:
 
 ```bash
