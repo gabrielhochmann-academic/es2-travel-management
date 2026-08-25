@@ -315,13 +315,13 @@ def add_cover(doc):
     add_run(p, "DISCIPLINA", bold=True, color=TEAL, size=7.5)
     p = left.add_paragraph()
     set_paragraph_spacing(p, after=0)
-    add_run(p, "Engenharia de Software II — ESII", color=NAVY, size=9.3)
+    add_run(p, "Engenharia de Software II - ESII", color=NAVY, size=9.3)
     p = right.paragraphs[0]
     set_paragraph_spacing(p, after=3)
     add_run(p, "VERSÃO", bold=True, color=TEAL, size=7.5)
     p = right.add_paragraph()
     set_paragraph_spacing(p, after=0)
-    add_run(p, "1.1  •  Sprint 0  •  25/08/2026", color=NAVY, size=9.3)
+    add_run(p, "1.2  •  Sprint 0  •  25/08/2026", color=NAVY, size=9.3)
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -423,12 +423,14 @@ def add_document_content(doc):
         ("Gestão", "Git, GitHub e Jira", "Versionar artefatos e acompanhar o trabalho da equipe."),
     ], widths=[3.0, 5.2, 8.2], font_size=8.5)
     add_text(doc, "Para a execução local, o ambiente requer Docker Desktop. Após a configuração, o comando docker compose up --build inicia os serviços: interface na porta 5173, API na porta 8080 e PostgreSQL na porta 5432.", after=10)
+    add_callout(doc, "Estado atual do demonstrador", "Na Sprint 0, a interface React funciona com estado local. A API Spring Boot e o PostgreSQL foram validados em Docker Compose, mas a integração entre a tela e os endpoints ainda será implementada.", accent=AMBER)
 
     add_section_label(doc, "Governança do documento")
     add_heading(doc, "10", "Histórico de versões")
     add_table(doc, ["Versão", "Data", "Alteração", "Autores"], [
         ("1.0", "23/08/2026", "Primeira versão do documento.", "Gabriel Hochmann Alves; Angelo Vilani; Diogo Rafael Jardim Melo Pasa"),
         ("1.1", "25/08/2026", "Reformulação visual e executiva dos artefatos da Sprint 0.", "Gabriel Hochmann Alves; Angelo Vilani; Diogo Rafael Jardim Melo Pasa"),
+        ("1.2", "25/08/2026", "Alinhamento do estado do demonstrador e revisão de consistência dos artefatos.", "Gabriel Hochmann Alves; Angelo Vilani; Diogo Rafael Jardim Melo Pasa"),
     ], widths=[2.0, 2.8, 6.4, 5.2], font_size=8.0)
     add_callout(doc, "Referência", "Este documento consolida a Especificação de Requisitos do Sistema de Gestão de Viagens e os materiais de aula da disciplina de Engenharia de Software II.", accent=BLUE)
 
@@ -438,7 +440,7 @@ def main():
     configure_document(doc)
     add_cover(doc)
     add_document_content(doc)
-    doc.core_properties.title = "Documento de Visão — Sistema de Gestão de Viagens"
+    doc.core_properties.title = "Documento de Visão - Sistema de Gestão de Viagens"
     doc.core_properties.subject = "Visão executiva e requisitos do SGV"
     doc.core_properties.author = "Gabriel Hochmann Alves; Angelo Vilani; Diogo Rafael Jardim Melo Pasa"
     doc.core_properties.keywords = "SGV, viagens corporativas, documento de visão, Sprint 0"

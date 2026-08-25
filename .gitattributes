@@ -1,0 +1,2 @@
+# O script abaixo é uma ferramenta de geração de documento, não parte do produto executável.
+tools/generate_vision_document.py linguist-detectable=false
