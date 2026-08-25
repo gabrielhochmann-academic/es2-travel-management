@@ -1,7 +1,7 @@
 # Encerramento da Sprint 0
 
 > **Marco Git:** `sprint-0`  
-> **Data de encerramento:** 25 de agosto de 2026
+> **Data de encerramento:** 24 de agosto de 2026
 
 ## Objetivo do marco
 
