@@ -1,53 +1,77 @@
 # Sistema de Gestão de Viagens
 
-Projeto acadêmico da disciplina de Engenharia de Software II da UNIOESTE.
+> **SGV — Sistema de Gestão de Viagens**
+>
+> Uma aplicação web para organizar o planejamento, a aprovação e o acompanhamento de viagens corporativas.
 
-O Sistema de Gestão de Viagens (SGV) organiza o registro e o acompanhamento de viagens corporativas. O repositório contém a aplicação de exemplo, os documentos de análise e a configuração necessária para execução local.
+O SGV centraliza informações que normalmente ficam dispersas entre planilhas, e-mails e mensagens. A proposta é oferecer ao colaborador uma jornada clara de solicitação e ao gestor mais visibilidade para decidir e acompanhar as viagens da organização.
 
-## Tecnologias
+## Visão rápida do produto
 
-| Camada | Tecnologia |
+| Para o colaborador | Para o gestor | Para a organização |
+|---|---|---|
+| Registra e acompanha a própria solicitação de viagem. | Analisa solicitações e toma decisões de aprovação ou rejeição. | Mantém informações organizadas para consultas e indicadores futuros. |
+
+> **Sprint 0:** a interface React funciona como demonstrador visual com estado local. A API Spring Boot e o PostgreSQL foram validados com Docker Compose. A integração entre a interface e a API será tratada nas próximas sprints.
+
+---
+
+## Arquitetura e tecnologias
+
+| Camada | Tecnologia | Responsabilidade |
+|---|---|---|
+| **Interface** | React, TypeScript e Vite | Apresentar a experiência do usuário. |
+| **API** | Spring Boot e Java 21 | Aplicar regras de negócio e disponibilizar endpoints REST. |
+| **Dados** | PostgreSQL 16 | Persistir informações sobre viagens. |
+| **Execução** | Docker Compose | Subir os serviços de forma integrada no ambiente local. |
+| **Gestão** | GitHub e Jira | Versionar artefatos e acompanhar o trabalho da equipe. |
+
+---
+
+## Navegue pelos artefatos
+
+| Artefato | O que ele comunica |
 |---|---|
-| Interface | React, TypeScript e Vite |
-| API | Spring Boot e Java 21 |
-| Banco de dados | PostgreSQL 16 |
-| Execução local | Docker Compose |
+| [Central de documentação](docs/README.md) | Mapa dos artefatos e melhor ponto de partida para cada público. |
+| [Documento de Visão](docs/visao/Documento-de-Visao-SGV.docx) | Problema, valor, escopo, usuários e prioridades do SGV. |
+| [Requisitos do produto](docs/requisitos.md) | Capacidades, regras de negócio e restrições técnicas. |
+| [UC01 — Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Jornada principal do colaborador para iniciar uma solicitação. |
+| [Arquitetura do SGV](docs/arquitetura/README.md) | Relação entre interface, API, banco de dados e Docker Compose. |
+| [Encerramento da Sprint 0](docs/sprints/sprint-0.md) | Baseline de artefatos identificada pela tag `sprint-0`. |
 
-## Documentação
-
-| Artefato | Descrição |
-|---|---|
-| [Requisitos iniciais](docs/requisitos.md) | Requisitos e regras utilizados no exemplo técnico. |
-| [Documento de Visão](docs/visao/Documento-de-Visao-SGV.docx) | Documento formal com contexto, objetivo, escopo, usuários e restrições do sistema. |
-| [UC01 — Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Cadastro de viagem em rascunho e fluxos relacionados. |
-| [Diagrama de caso de uso](docs/casos-de-uso/diagrama-caso-de-uso.png) | Representação UML dos fluxos do exemplo técnico. |
-| [Arquitetura](docs/arquitetura/README.md) | Organização do frontend, backend, banco de dados e Docker Compose. |
+---
 
 ## Execução local
 
-Com Docker Desktop em execução, execute na raiz do projeto:
+Com o **Docker Desktop** em execução, abra um terminal na raiz do repositório e execute:
 
 ```bash
 docker compose up --build
 ```
 
-Depois, abra `http://localhost:5173`.
+| Serviço | Endereço | Finalidade |
+|---|---|---|
+| Interface | `http://localhost:5173` | Acessar o demonstrador visual do SGV. |
+| API | `http://localhost:8080` | Acessar os serviços de negócio. |
+| Lista de viagens | `http://localhost:8080/api/trips` | Consultar as viagens persistidas pela API. |
+| PostgreSQL | `localhost:5432` | Acessar o banco de dados local, quando necessário. |
 
-| Serviço | Endereço |
-|---|---|
-| Frontend | `http://localhost:5173` |
-| API | `http://localhost:8080` |
-| PostgreSQL | `localhost:5432` |
+Para encerrar a execução interativa, use `Ctrl + C`. Os dados do PostgreSQL permanecem no volume nomeado `postgres_data`.
 
-Para encerrar os serviços, pressione `Ctrl + C` no terminal. Os dados do PostgreSQL permanecem no volume `postgres_data`.
+---
 
-## Estrutura do projeto
+## Organização do repositório
 
 ```text
 .
-├── backend/          API Spring Boot
-├── database/         Script de inicialização do PostgreSQL
-├── docs/             Documentos e diagramas acadêmicos
-├── frontend/         Interface React
-└── docker-compose.yml
+├── backend/            API Spring Boot
+├── database/           Estrutura versionada do PostgreSQL
+│   └── trips.sql       Tabela de viagens e índices relacionados
+├── docs/               Visão de produto, requisitos, casos de uso e arquitetura
+├── frontend/           Interface React
+└── docker-compose.yml  Execução integrada dos serviços
 ```
+
+## Versionamento por sprint
+
+Ao término de cada sprint, a equipe cria uma tag anotada na `main` seguindo o padrão `sprint-<número>`, como `sprint-0`, `sprint-1` e `sprint-2`. A tag identifica a versão integrada de código, scripts e documentação correspondente ao encerramento da sprint.

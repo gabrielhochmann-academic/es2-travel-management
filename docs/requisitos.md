@@ -1,39 +1,77 @@
-# Requisitos iniciais — Sistema de Gestão de Viagens
+# Requisitos do Produto — SGV
 
-## 1. Objetivo
+> **Propósito:** transformar o controle de viagens corporativas em um fluxo único, rastreável e fácil de acompanhar por colaboradores e gestores.
 
-O Sistema de Gestão de Viagens permite registrar e acompanhar viagens corporativas. O exemplo técnico utiliza o cadastro de viagens como fluxo principal.
+## Contexto e objetivo
 
-## 2. Requisitos funcionais
+O **Sistema de Gestão de Viagens (SGV)** organiza o registro e o acompanhamento de viagens corporativas. Nesta etapa, o produto concentra-se no ciclo essencial de uma solicitação: a viagem é planejada, registrada como rascunho, submetida à análise e decidida pelo gestor.
 
-| Código | Requisito |
+> **Resultado esperado:** reduzir informações dispersas e tornar a situação de cada viagem clara para quem solicita, analisa e acompanha o processo.
+
+---
+
+## Escopo do exemplo técnico
+
+| Incluído | Não contemplado nesta etapa |
 |---|---|
-| RF01 | O sistema deve permitir registrar uma viagem com destino, período, motivo, meio de transporte e responsável. |
-| RF02 | Uma viagem registrada deve iniciar na situação **Rascunho**. |
-| RF03 | O sistema deve permitir consultar as viagens registradas. |
-| RF04 | Uma viagem em rascunho pode ser submetida para análise. |
-| RF05 | Uma viagem submetida pode ser aprovada ou rejeitada. |
+| Registro de viagem com destino, período, motivo, transporte e responsável. | Integrações com ERP, sistemas de passagens, pagamento eletrônico e autenticação corporativa. |
+| Consulta de viagens registradas. | Automação de despesas, pagamentos ou reservas externas. |
+| Fluxo de Rascunho, Solicitada, Aprovada e Rejeitada. | Módulos adicionais além do fluxo acadêmico priorizado. |
 
-## 3. Regras de negócio
+---
 
-| Código | Regra |
+## Requisitos funcionais
+
+| Código | Capacidade do produto | Critério de entendimento |
+|---|---|---|
+| **RF01** | Registrar viagem | O sistema permite informar destino, período, motivo, meio de transporte e responsável. |
+| **RF02** | Iniciar como rascunho | Toda viagem recém-registrada recebe a situação **Rascunho**. |
+| **RF03** | Consultar viagens | O sistema permite visualizar as viagens registradas. |
+| **RF04** | Submeter para análise | Uma viagem em rascunho pode ser encaminhada para decisão. |
+| **RF05** | Decidir solicitação | Uma viagem submetida pode ser aprovada ou rejeitada por um gestor. |
+
+---
+
+## Regras de negócio
+
+| Código | Regra | Impacto para o usuário |
+|---|---|---|
+| **RN01** | Destino, período, motivo, meio de transporte e responsável são obrigatórios. | O registro só é concluído com os dados essenciais da viagem. |
+| **RN02** | A data de retorno deve ser igual ou posterior à data de saída. | O período informado deve ser válido. |
+| **RN03** | O registro inicial possui a situação **Rascunho**. | A viagem ainda pode ser revisada antes da análise. |
+| **RN04** | Somente viagens em rascunho podem ser submetidas. | O fluxo mantém uma ordem clara de transições. |
+| **RN05** | Somente viagens submetidas podem ser aprovadas ou rejeitadas. | A decisão ocorre somente após o encaminhamento formal. |
+| **RN06** | A rejeição exige justificativa. | O solicitante recebe contexto para uma eventual revisão. |
+
+---
+
+## Restrições técnicas
+
+| Código | Diretriz | Decisão adotada |
+|---|---|---|
+| **RT01** | Interface web | React e TypeScript. |
+| **RT02** | API de negócio | Spring Boot com Java 21. |
+| **RT03** | Persistência | PostgreSQL. |
+| **RT04** | Execução local integrada | Docker Compose. |
+
+---
+
+## Fluxo de situação da viagem
+
+```text
+Rascunho → Solicitada → Aprovada
+                    └→ Rejeitada
+```
+
+| Situação | Significado |
 |---|---|
-| RN01 | Destino, período, motivo, meio de transporte e responsável são obrigatórios. |
-| RN02 | A data de retorno deve ser igual ou posterior à data de saída. |
-| RN03 | O registro inicial de uma viagem possui situação **Rascunho**. |
-| RN04 | Somente viagens em rascunho podem ser submetidas para análise. |
-| RN05 | Somente viagens submetidas podem receber aprovação ou rejeição. |
-| RN06 | A rejeição de uma viagem exige justificativa. |
+| **Rascunho** | Viagem registrada e ainda passível de ajuste pelo colaborador. |
+| **Solicitada** | Viagem encaminhada para análise do gestor. |
+| **Aprovada** | Solicitação aceita e apta a receber despesas no escopo do produto. |
+| **Rejeitada** | Solicitação não aprovada; a decisão exige justificativa. |
 
-## 4. Restrições técnicas
+---
 
-| Código | Restrição |
-|---|---|
-| RT01 | A aplicação deve possuir interface web desenvolvida em React e TypeScript. |
-| RT02 | A API deve ser implementada em Spring Boot com Java 21. |
-| RT03 | Os dados devem ser armazenados em PostgreSQL. |
-| RT04 | Os serviços devem poder ser executados localmente com Docker Compose. |
+## Referência do escopo
 
-## 5. Escopo do exemplo
-
-O exemplo técnico concentra-se no registro de viagens e no ciclo de situação Rascunho, Solicitada, Aprovada e Rejeitada. Outros módulos do produto serão detalhados conforme o planejamento da disciplina.
+O exemplo técnico da Sprint 0 prioriza o cadastro de viagens e o ciclo de situação descrito acima. A evolução de módulos adicionais será orientada pelo planejamento do produto e pelas próximas sprints.
