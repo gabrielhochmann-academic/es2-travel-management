@@ -26,6 +26,7 @@ O SGV foi concebido para centralizar o planejamento, a solicitação e o acompan
 | [UC01 — Registrar viagem](casos-de-uso/UC01-Registrar-Viagem.md) | Descrever a primeira jornada de valor disponibilizada pelo sistema. | Equipe, Product Owner e usuários. |
 | [Diagrama de caso de uso](casos-de-uso/diagrama-caso-de-uso.png) | Tornar visíveis os casos de uso e os perfis que interagem com o SGV. | Todos os públicos. |
 | [Arquitetura do SGV](arquitetura/README.md) | Apresentar a composição executável da solução e a responsabilidade de cada camada. | Equipe técnica e avaliadores. |
+| [Configuração de ambiente](ambiente.md) | Explicar a execução local e a proteção de credenciais e variáveis sensíveis. | Equipe técnica e avaliadores. |
 | [Encerramento da Sprint 0](sprints/sprint-0.md) | Registrar a baseline de artefatos integrada ao fim da primeira sprint. | Equipe e avaliadores. |
 
 ---

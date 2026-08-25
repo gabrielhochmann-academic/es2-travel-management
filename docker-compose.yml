@@ -2,25 +2,25 @@ services:
   database:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: sgv
-      POSTGRES_USER: sgv
-      POSTGRES_PASSWORD: sgv
+      POSTGRES_DB: ${POSTGRES_DB:?Defina POSTGRES_DB no arquivo .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Defina POSTGRES_USER no arquivo .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
     ports: ["5432:5432"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sgv -d sgv"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5
   backend:
     build: ./backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/sgv
-      SPRING_DATASOURCE_USERNAME: sgv
-      SPRING_DATASOURCE_PASSWORD: sgv
-      CORS_ORIGIN: http://localhost:5173
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${POSTGRES_DB:?Defina POSTGRES_DB no arquivo .env}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:?Defina POSTGRES_USER no arquivo .env}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
     ports: ["8080:8080"]
     depends_on:
       database:
