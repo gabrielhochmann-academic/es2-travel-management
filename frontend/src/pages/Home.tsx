@@ -38,7 +38,7 @@ const initialTrips: Trip[] = [
   {
     id: "VG-024",
     destination: "Foz do Iguaçu · PR",
-    period: "02–05 set. 2026",
+    period: "02-05 set. 2026",
     reason: "Visita técnica",
     transport: "Terrestre",
     status: "Aprovada",
@@ -58,7 +58,7 @@ const initialTrips: Trip[] = [
   {
     id: "VG-022",
     destination: "Curitiba · PR",
-    period: "10–12 set. 2026",
+    period: "10-12 set. 2026",
     reason: "Reunião com cliente",
     transport: "Aéreo",
     status: "Rascunho",
@@ -85,7 +85,7 @@ function formatCurrency(value: number) {
 function formatPeriod(start: string, end: string) {
   if (!start || !end) return "Período a definir";
   const formatter = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
-  return `${formatter.format(new Date(`${start}T12:00:00`))} — ${formatter.format(new Date(`${end}T12:00:00`))}`;
+  return `${formatter.format(new Date(`${start}T12:00:00`))} - ${formatter.format(new Date(`${end}T12:00:00`))}`;
 }
 
 export default function Home() {
@@ -187,7 +187,7 @@ export default function Home() {
             <p className="intro-text">Registre, acompanhe e analise as viagens corporativas em um único ambiente.</p>
             <div className="intro-meta">
               <div><span>Fluxo</span><b>Rascunho → Solicitação → Decisão</b></div>
-              <div><span>Persistência</span><b>PostgreSQL</b></div>
+              <div><span>Infraestrutura</span><b>API e PostgreSQL preparados</b></div>
             </div>
           </div>
           <div className="atlas-card" aria-label="Ilustração editorial de rotas">
@@ -257,7 +257,7 @@ export default function Home() {
             <span className="note-label">NOTA DE MARGEM</span>
             <h3>Recursos do sistema</h3>
             <p>O SGV reúne o cadastro de viagens, o acompanhamento de situações e a organização das informações necessárias para análise.</p>
-            <ul><li><Check size={15} /> Frontend React</li><li><Check size={15} /> API Spring Boot</li><li><Check size={15} /> Persistência PostgreSQL</li><li><TimerReset size={15} /> Execução com Docker</li></ul>
+            <ul><li><Check size={15} /> Frontend React</li><li><Check size={15} /> API Spring Boot preparada</li><li><Check size={15} /> PostgreSQL preparado para persistência</li><li><TimerReset size={15} /> Execução com Docker</li></ul>
           </aside>
         </section>
 

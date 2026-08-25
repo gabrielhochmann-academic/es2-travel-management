@@ -1,4 +1,4 @@
-# UC01 — Registrar viagem
+# UC01 - Registrar viagem
 
 > **Jornada priorizada:** permitir que o colaborador transforme uma necessidade de deslocamento em uma solicitação de viagem organizada e pronta para análise.
 
@@ -16,6 +16,8 @@
 O registro de viagem é a porta de entrada do fluxo do SGV. Nesta etapa, o colaborador informa as características essenciais da viagem e o sistema valida se a solicitação possui dados suficientes para ser acompanhada posteriormente.
 
 > **Situação inicial garantida:** toda viagem registrada inicia como **Rascunho**. Ela poderá ser revisada antes de ser submetida ao gestor.
+
+> **Estado do demonstrador na Sprint 0:** a interface ilustra esta jornada com estado local. O contrato equivalente já existe na API, mas a chamada entre frontend e backend ainda não foi integrada.
 
 ---
 

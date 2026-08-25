@@ -1,6 +1,6 @@
 # Sistema de Gestão de Viagens
 
-> **SGV — Sistema de Gestão de Viagens**
+> **SGV - Sistema de Gestão de Viagens**
 >
 > Uma aplicação web para organizar o planejamento, a aprovação e o acompanhamento de viagens corporativas.
 
@@ -35,7 +35,7 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 | [Central de documentação](docs/README.md) | Mapa dos artefatos e melhor ponto de partida para cada público. |
 | [Documento de Visão](docs/visao/Documento-de-Visao-SGV.docx) | Problema, valor, escopo, usuários e prioridades do SGV. |
 | [Requisitos do produto](docs/requisitos.md) | Capacidades, regras de negócio e restrições técnicas. |
-| [UC01 — Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Jornada principal do colaborador para iniciar uma solicitação. |
+| [UC01 - Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Jornada principal do colaborador para iniciar uma solicitação. |
 | [Arquitetura do SGV](docs/arquitetura/README.md) | Relação entre interface, API, banco de dados e Docker Compose. |
 | [Encerramento da Sprint 0](docs/sprints/sprint-0.md) | Baseline de artefatos identificada pela tag `sprint-0`. |
 

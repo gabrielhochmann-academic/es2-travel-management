@@ -1,4 +1,4 @@
-# Requisitos do Produto — SGV
+# Requisitos do Produto - SGV
 
 > **Propósito:** transformar o controle de viagens corporativas em um fluxo único, rastreável e fácil de acompanhar por colaboradores e gestores.
 
@@ -7,6 +7,10 @@
 O **Sistema de Gestão de Viagens (SGV)** organiza o registro e o acompanhamento de viagens corporativas. Nesta etapa, o produto concentra-se no ciclo essencial de uma solicitação: a viagem é planejada, registrada como rascunho, submetida à análise e decidida pelo gestor.
 
 > **Resultado esperado:** reduzir informações dispersas e tornar a situação de cada viagem clara para quem solicita, analisa e acompanha o processo.
+
+## Estado atual da Sprint 0
+
+Os requisitos deste documento representam a direção do produto e não devem ser interpretados como lista completa de funcionalidades já integradas na interface. Na Sprint 0, a API disponibiliza o cadastro, a consulta, a submissão e a decisão de viagens; a interface React ainda demonstra o fluxo com estado local. O controle de despesas, a separação de perfis e a integração frontend-API permanecem como evoluções planejadas.
 
 ---
 

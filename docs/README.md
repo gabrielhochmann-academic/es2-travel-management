@@ -12,7 +12,7 @@ O SGV foi concebido para centralizar o planejamento, a solicitação e o acompan
 |---|---|---|
 | **Product Owner e stakeholders** | [Documento de Visão](visao/Documento-de-Visao-SGV.docx) | Problema, proposta de valor, escopo, perfis envolvidos e prioridades do produto. |
 | **Equipe de desenvolvimento** | [Requisitos do produto](requisitos.md) | Fluxo de viagens, regras de negócio e restrições técnicas que orientam a implementação. |
-| **Analistas e validadores** | [UC01 — Registrar viagem](casos-de-uso/UC01-Registrar-Viagem.md) | Jornada principal do colaborador, exceções e critérios do cadastro de viagens. |
+| **Analistas e validadores** | [UC01 - Registrar viagem](casos-de-uso/UC01-Registrar-Viagem.md) | Jornada principal do colaborador, exceções e critérios do cadastro de viagens. |
 | **Equipe técnica** | [Arquitetura do SGV](arquitetura/README.md) | Relação entre interface, API, banco de dados e ambiente integrado. |
 
 ---
@@ -23,7 +23,7 @@ O SGV foi concebido para centralizar o planejamento, a solicitação e o acompan
 |---|---|---|
 | [Documento de Visão](visao/Documento-de-Visao-SGV.docx) | Comunicar por que o SGV existe, qual valor entrega e quais limites orientam sua evolução. | Product Owner, stakeholders e equipe. |
 | [Requisitos do produto](requisitos.md) | Traduzir a visão em comportamentos, regras e restrições verificáveis. | Equipe, Product Owner e validação. |
-| [UC01 — Registrar viagem](casos-de-uso/UC01-Registrar-Viagem.md) | Descrever a primeira jornada de valor disponibilizada pelo sistema. | Equipe, Product Owner e usuários. |
+| [UC01 - Registrar viagem](casos-de-uso/UC01-Registrar-Viagem.md) | Descrever a primeira jornada de valor disponibilizada pelo sistema. | Equipe, Product Owner e usuários. |
 | [Diagrama de caso de uso](casos-de-uso/diagrama-caso-de-uso.png) | Tornar visíveis os casos de uso e os perfis que interagem com o SGV. | Todos os públicos. |
 | [Arquitetura do SGV](arquitetura/README.md) | Apresentar a composição executável da solução e a responsabilidade de cada camada. | Equipe técnica e avaliadores. |
 | [Configuração de ambiente](ambiente.md) | Explicar a execução local e a proteção de credenciais e variáveis sensíveis. | Equipe técnica e avaliadores. |
@@ -33,7 +33,7 @@ O SGV foi concebido para centralizar o planejamento, a solicitação e o acompan
 
 ## Estado do demonstrador
 
-> **Sprint 0:** a interface React funciona como demonstrador visual com estado local. A API Spring Boot e o PostgreSQL foram validados com Docker Compose, mas a interface ainda não consome os endpoints da API. A integração frontend–API é uma evolução planejada para as próximas sprints.
+> **Sprint 0:** a interface React funciona como demonstrador visual com estado local. A API Spring Boot e o PostgreSQL foram validados com Docker Compose, mas a interface ainda não consome os endpoints da API. A integração frontend-API é uma evolução planejada para as próximas sprints.
 
 ## Governança dos artefatos
 

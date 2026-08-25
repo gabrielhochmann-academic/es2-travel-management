@@ -17,7 +17,7 @@ O exemplo técnico do SGV é composto por três serviços integrados e executado
 | **Interface web** | React, TypeScript, Vite e Nginx | Apresentar a experiência de registro e acompanhamento de viagens. | `http://localhost:5173` |
 | **API de negócio** | Spring Boot e Java 21 | Aplicar as regras do fluxo de viagens e disponibilizar endpoints REST. | `http://localhost:8080` |
 | **Banco de dados** | PostgreSQL 16 | Persistir viagens, situações e informações associadas. | `localhost:5432` |
-| **Orquestração** | Docker Compose | Construir e executar os serviços de forma integrada e reproduzível. | — |
+| **Orquestração** | Docker Compose | Construir e executar os serviços de forma integrada e reproduzível. | - |
 
 ---
 

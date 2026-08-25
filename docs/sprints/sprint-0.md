@@ -19,7 +19,7 @@ Este documento registra a baseline de encerramento da Sprint 0 do Sistema de Ges
 
 ## Limitação conhecida
 
-A interface React ainda não consome os endpoints da API. As ações realizadas pelo demonstrador são mantidas apenas no estado local da aplicação e não persistem no PostgreSQL. A integração frontend–API será tratada como evolução das próximas sprints.
+A interface React ainda não consome os endpoints da API. As ações realizadas pelo demonstrador são mantidas apenas no estado local da aplicação e não persistem no PostgreSQL. A integração frontend-API será tratada como evolução das próximas sprints.
 
 ## Recuperação futura
 
