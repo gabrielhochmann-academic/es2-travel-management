@@ -21,6 +21,10 @@ Este documento registra a baseline de encerramento da Sprint 0 do Sistema de Ges
 
 A interface React ainda não consome os endpoints da API. As ações realizadas pelo demonstrador são mantidas apenas no estado local da aplicação e não persistem no PostgreSQL. A integração frontend-API será tratada como evolução das próximas sprints.
 
+## Controle formal
+
+O encerramento técnico está complementado pelos registros de [revisão da Sprint 0](revisao-sprint-0.md) e [retrospectiva da Sprint 0](retrospectiva-sprint-0.md). A visualização histórica das sete issues concluídas permanece disponível no relatório da Sprint 0 do quadro Jira.
+
 ## Recuperação futura
 
 Para recuperar os artefatos versionados deste marco, utilize:
