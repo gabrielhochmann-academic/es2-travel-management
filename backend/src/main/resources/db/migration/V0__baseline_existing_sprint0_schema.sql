@@ -1,0 +1,2 @@
+-- Baseline sem alterações para bancos que já possuem a estrutura da Sprint 0.
+-- Em uma base nova, esta migração apenas registra o ponto de partida do histórico Flyway.
