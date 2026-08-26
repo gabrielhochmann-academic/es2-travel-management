@@ -12,7 +12,7 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 |---|---|---|
 | Registra e acompanha a própria solicitação de viagem. | Analisa solicitações e toma decisões de aprovação ou rejeição. | Mantém informações organizadas para consultas e indicadores futuros. |
 
-> **Sprint 0:** a interface React funciona como demonstrador visual com estado local. A API Spring Boot e o PostgreSQL foram validados com Docker Compose. A integração entre a interface e a API será tratada nas próximas sprints.
+> **Sprint 1:** a interface React consome a API Spring Boot. O cadastro de empregados e o planejamento de viagens são persistidos no PostgreSQL por migrações Flyway.
 
 ---
 
@@ -33,10 +33,13 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 | Artefato | O que ele comunica |
 |---|---|
 | [Documento de Visão](docs/visao/Documento-de-Visao-SGV.docx) | Problema, valor, escopo, usuários e prioridades do SGV. |
-| [Requisitos do produto](docs/requisitos.md) | Capacidades, regras de negócio e restrições técnicas. |
-| [UC01 - Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Jornada principal do colaborador para iniciar uma solicitação. |
+| [Requisitos da Sprint 1](docs/requisitos.md) | Capacidades, regras de negócio e restrições técnicas implementadas. |
+| [UC00 - Cadastrar empregado](docs/casos-de-uso/UC00-Cadastrar-Empregado.md) | Jornada para disponibilizar empregados no planejamento de viagem. |
+| [UC01 - Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Jornada do colaborador para registrar uma viagem vinculada a empregado. |
+| [MER do SGV](docs/modelagem/MER-SGV.md) | Modelo entidade relacionamento de empregados e viagens. |
 | [Arquitetura do SGV](docs/arquitetura/README.md) | Relação entre interface, API, banco de dados e Docker Compose. |
 | [Encerramento da Sprint 0](docs/sprints/sprint-0.md) | Baseline de artefatos identificada pela tag `sprint-0`. |
+| [Planejamento da Sprint 1](docs/sprints/sprint-1.md) | Objetivo, escopo, critérios de aceite e referências da entrega atual. |
 
 ---
 
@@ -50,6 +53,8 @@ cp .env.example .env
 
 Abra o arquivo `.env` e ajuste a senha local do PostgreSQL. Esse arquivo é ignorado pelo Git e não deve ser compartilhado. Se já houver um volume `postgres_data` criado com outra credencial, mantenha a configuração compatível ou recrie o ambiente com `docker compose down -v` antes de subir novamente. Esse comando remove os dados locais do banco.
 
+> **Atualização da Sprint 1:** como o banco agora cria um usuário específico para a aplicação e aplica migrações Flyway, um volume local herdado da Sprint 0 deve ser recriado antes da primeira execução desta versão. Em ambiente de desenvolvimento, execute `docker compose down -v` e depois `docker compose up --build`. O comando remove somente os dados locais do PostgreSQL.
+
 Com o **Docker Desktop** em execução, abra um terminal na raiz do repositório e execute:
 
 ```bash
@@ -60,6 +65,7 @@ docker compose up --build
 |---|---|---|
 | Interface | `http://localhost:5173` | Acessar o demonstrador visual do SGV. |
 | API | `http://localhost:8080` | Acessar os serviços de negócio. |
+| Lista de empregados | `http://localhost:8080/api/employees` | Consultar os empregados persistidos pela API. |
 | Lista de viagens | `http://localhost:8080/api/trips` | Consultar as viagens persistidas pela API. |
 | PostgreSQL | `localhost:5432` | Acessar o banco de dados local, quando necessário. |
 
@@ -72,9 +78,8 @@ Para encerrar a execução interativa, use `Ctrl + C`. Os dados do PostgreSQL pe
 ```text
 .
 ├── backend/            API Spring Boot
-├── database/           Estrutura versionada do PostgreSQL
-│   └── trips.sql       Tabela de viagens e índices relacionados
-├── docs/               Visão de produto, requisitos, casos de uso e arquitetura
+├── database/           Inicialização local do PostgreSQL e usuário da aplicação
+├── docs/               Visão de produto, requisitos, casos de uso, MER e arquitetura
 ├── frontend/           Interface React
 └── docker-compose.yml  Execução integrada dos serviços
 ```

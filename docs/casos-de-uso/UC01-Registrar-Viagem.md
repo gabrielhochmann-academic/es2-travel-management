@@ -1,94 +1,58 @@
-# UC01 - Registrar viagem
-
-> **Jornada priorizada:** permitir que o colaborador transforme uma necessidade de deslocamento em uma solicitação de viagem organizada e pronta para análise.
+# UC01 | Registrar viagem
 
 | Elemento | Definição |
 |---|---|
-| **Ator principal** | Colaborador |
-| **Objetivo** | Registrar uma viagem corporativa na situação inicial de **Rascunho**. |
-| **Prioridade** | Alta |
-| **Valor entregue** | O colaborador passa a ter uma solicitação estruturada, consultável e preparada para o fluxo de aprovação. |
-
----
-
-## Contexto da jornada
-
-O registro de viagem é a porta de entrada do fluxo do SGV. Nesta etapa, o colaborador informa as características essenciais da viagem e o sistema valida se a solicitação possui dados suficientes para ser acompanhada posteriormente.
-
-> **Situação inicial garantida:** toda viagem registrada inicia como **Rascunho**. Ela poderá ser revisada antes de ser submetida ao gestor.
-
-> **Estado do demonstrador na Sprint 0:** a interface ilustra esta jornada com estado local. O contrato equivalente já existe na API, mas a chamada entre frontend e backend ainda não foi integrada.
-
----
-
-## Pré-condições
-
-| Condição | Responsável |
-|---|---|
-| O SGV está disponível para o registro de viagens. | Sistema |
-| O colaborador possui os dados necessários para o planejamento. | Colaborador |
-
----
+| Ator principal | Colaborador |
+| Objetivo | Registrar uma viagem corporativa na situação inicial de Rascunho. |
+| Prioridade | Alta |
+| Pré-condições | O SGV está disponível e há pelo menos um empregado cadastrado. |
+| Pós-condição | Uma viagem com número único fica associada a um empregado e disponível para consulta. |
 
 ## Fluxo principal
 
 | Etapa | Ação | Resultado esperado |
 |---|---|---|
-| **1** | O colaborador seleciona **Nova viagem**. | O sistema inicia uma nova solicitação. |
-| **2** | O sistema apresenta o formulário de cadastro. | Os campos necessários ficam disponíveis para preenchimento. |
-| **3** | O colaborador informa destino, período, motivo, transporte e responsável. | A solicitação reúne os dados essenciais da viagem. |
-| **4** | O colaborador confirma o registro. | O sistema recebe a solicitação para validação. |
-| **5** | O sistema valida os dados informados. | Campos e período são conferidos conforme as regras de negócio. |
-| **6** | O sistema cria a viagem como **Rascunho**. | A viagem entra no fluxo do SGV sem ser submetida ainda. |
-| **7** | O sistema apresenta a viagem registrada. | O colaborador pode consultar o registro e prepará-lo para submissão. |
+| 1 | O colaborador seleciona Nova viagem. | O sistema apresenta o formulário de planejamento. |
+| 2 | O colaborador seleciona um empregado cadastrado. | O vínculo do empregado fica definido para a viagem. |
+| 3 | O colaborador informa destino, datas, motivo e meio de transporte. | Os dados obrigatórios do planejamento ficam preenchidos. |
+| 4 | O colaborador confirma o registro. | O sistema recebe a solicitação para validação. |
+| 5 | O sistema valida os campos, o empregado e o período informado. | Somente dados válidos seguem para persistência. |
+| 6 | O sistema gera o número da viagem e a armazena como Rascunho. | A viagem fica vinculada ao empregado. |
+| 7 | O sistema apresenta a viagem registrada. | O colaborador pode consultar ou submeter o rascunho para análise. |
 
----
+## Fluxos alternativos
 
-## Tratamento de exceções
-
-| Código | Situação identificada | Resposta esperada do sistema |
+| Código | Situação | Resposta do sistema |
 |---|---|---|
-| **FA01** | Um campo obrigatório não foi informado. | Destacar os campos que precisam ser preenchidos antes da conclusão. |
-| **FA02** | A data de retorno é anterior à data de saída. | Informar que o período da viagem é inválido. |
-| **FA03** | Ocorre uma falha ao registrar os dados. | Informar que o cadastro não foi concluído e preservar uma comunicação clara ao usuário. |
+| FA01 | Há campo obrigatório ausente. | O sistema impede a conclusão e solicita o preenchimento. |
+| FA02 | A data de retorno é anterior à data de saída. | O sistema informa que o período é inválido. |
+| FA03 | O empregado selecionado não existe ou não está disponível. | O sistema impede o registro e solicita a seleção de um empregado cadastrado. |
+| FA04 | Ocorre falha de persistência. | O sistema informa que o cadastro não foi concluído. |
 
----
+## Dados necessários
 
-## Resultado da jornada
-
-Após o fluxo principal, a viagem é armazenada como **Rascunho** e fica disponível para consulta. A próxima decisão do colaborador é revisar a solicitação ou submetê-la para análise do gestor.
-
-```text
-Cadastro concluído → Rascunho → Consulta ou submissão para análise
-```
-
----
-
-## Casos de uso relacionados
-
-| Código | Jornada relacionada | Ator principal | Continuidade do UC01 |
-|---|---|---|---|
-| **UC02** | Consultar viagem | Colaborador | Permite revisar as informações registradas. |
-| **UC03** | Submeter viagem para análise | Colaborador | Altera a situação de **Rascunho** para **Solicitada**. |
-| **UC04** | Decidir solicitação de viagem | Gestor | Aprova ou rejeita uma viagem submetida. |
-
----
-
-## Dados necessários para o cadastro
-
-| Dado | Obrigatório | Por que é necessário |
+| Dado | Obrigatório | Origem |
 |---|---:|---|
-| Destino | Sim | Identifica onde a viagem será realizada. |
-| Data de saída | Sim | Define o início do período planejado. |
-| Data de retorno | Sim | Define o fim do período e viabiliza a validação do intervalo. |
-| Motivo | Sim | Registra a finalidade corporativa da viagem. |
-| Meio de transporte | Sim | Caracteriza o planejamento do deslocamento. |
-| Responsável | Sim | Identifica quem responde pela solicitação. |
+| Número da viagem | Sim | Gerado pelo sistema. |
+| Destino | Sim | Informado pelo colaborador. |
+| Data de saída | Sim | Informada pelo colaborador. |
+| Data de retorno | Sim | Informada pelo colaborador e validada pelo sistema. |
+| Motivo | Sim | Informado pelo colaborador. |
+| Meio de transporte | Sim | Informado pelo colaborador. |
+| Situação | Sim | Definida pelo sistema como Rascunho. |
+| Empregado | Sim | Selecionado a partir do cadastro de empregados. |
 
----
+## Casos relacionados
 
-## Visão do exemplo técnico
+| Código | Caso de uso | Continuidade |
+|---|---|---|
+| UC00 | Cadastrar empregado | Disponibiliza o empregado para seleção. |
+| UC02 | Consultar viagem | Permite revisar uma viagem registrada. |
+| UC03 | Submeter viagem para análise | Altera Rascunho para Solicitada. |
+| UC04 | Decidir solicitação de viagem | Aprova ou rejeita uma viagem submetida. |
 
-![Diagrama de caso de uso UC01](diagrama-caso-de-uso.png)
+## Diagrama
 
-O diagrama apresenta os quatro casos de uso expostos pelo exemplo técnico. A fonte editável está disponível em [diagrama-caso-de-uso.puml](diagrama-caso-de-uso.puml).
+![Diagrama de casos de uso](diagrama-caso-de-uso.png)
+
+A fonte editável está disponível em [diagrama-caso-de-uso.puml](diagrama-caso-de-uso.puml).
