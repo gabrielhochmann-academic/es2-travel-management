@@ -40,6 +40,8 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 | [Arquitetura do SGV](docs/arquitetura/README.md) | Relação entre interface, API, banco de dados e Docker Compose. |
 | [Encerramento da Sprint 0](docs/sprints/sprint-0.md) | Baseline de artefatos identificada pela tag `sprint-0`. |
 | [Planejamento da Sprint 1](docs/sprints/sprint-1.md) | Objetivo, escopo, critérios de aceite e referências da entrega atual. |
+| [Revisão da Sprint 0](docs/sprints/revisao-sprint-0.md) | Entregas verificadas, resultado e pendências transferidas. |
+| [Retrospectiva da Sprint 0](docs/sprints/retrospectiva-sprint-0.md) | Ações de melhoria aplicáveis à Sprint 1. |
 
 ---
 
