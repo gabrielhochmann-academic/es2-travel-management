@@ -37,7 +37,7 @@ O banco possui dois perfis locais. O usuário administrador definido por `POSTGR
 | Necessidade | Mecanismo adotado |
 |---|---|
 | Criar o usuário de aplicação | `database/init/01-create-application-role.sh` em volume novo do PostgreSQL. |
-| Versionar tabelas e relacionamentos | Migração `V1__create_employees_and_trips.sql` no backend. |
+| Versionar tabelas e relacionamentos | Migração `V1__evolve_sprint0_schema_to_sprint1.sql` no backend. |
 | Preservar dados entre reinicializações | Volume nomeado `postgres_data`. |
 | Recriar o ambiente local | `docker compose down -v` seguido de `docker compose up --build`. O primeiro comando remove os dados locais. |
 | Recuperar uma baseline de sprint | Tag Git `sprint-<número>` e backup lógico do banco, quando necessário. |
