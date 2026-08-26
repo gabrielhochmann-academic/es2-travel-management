@@ -45,6 +45,26 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 
 ---
 
+## Acompanhamento do projeto
+
+| Recurso | Referência oficial | Finalidade |
+|---|---|---|
+| Repositório acadêmico | [GitHub do SGV](https://github.com/gabrielhochmann-academic/es2-travel-management) | Código-fonte, documentação formal, histórico de commits e tags. |
+| Product Backlog e Sprint 1 | [Jira ES2](https://gabrielhochmann.atlassian.net/jira/software/c/projects/ES2/boards/1/backlog) | Acompanhar o backlog geral, a Sprint 1 e o status das issues. |
+| Pull Request da implementação | [PR #1](https://github.com/gabrielhochmann-academic/es2-travel-management/pull/1) | Revisar a implementação antes da integração com `develop`. |
+| Central de referências | [Sprint 1 no Confluence](https://gabrielhochmann.atlassian.net/wiki/spaces/ES2/pages/1114113/Sprint+1+Planejamento+e+evid+ncias) | Consultar atalhos para Jira, GitHub e artefatos. Não substitui a documentação formal versionada. |
+
+## Rastreabilidade da Sprint 1
+
+| Trabalho no Jira | Componentes e artefatos relacionados |
+|---|---|
+| [ES2-13](https://gabrielhochmann.atlassian.net/browse/ES2-13) Planejamento de viagem | Pacotes `employee` e `trip`, `frontend/src/pages/Home.tsx`, [requisitos](docs/requisitos.md), [UC00](docs/casos-de-uso/UC00-Cadastrar-Empregado.md), [UC01](docs/casos-de-uso/UC01-Registrar-Viagem.md) e [MER](docs/modelagem/MER-SGV.md). |
+| [ES2-24](https://gabrielhochmann.atlassian.net/browse/ES2-24) e [ES2-25](https://gabrielhochmann.atlassian.net/browse/ES2-25) | Requisitos, casos de uso e modelo entidade relacionamento da Sprint 1. |
+| [ES2-28](https://gabrielhochmann.atlassian.net/browse/ES2-28), [ES2-29](https://gabrielhochmann.atlassian.net/browse/ES2-29) e [ES2-32](https://gabrielhochmann.atlassian.net/browse/ES2-32) | Migrações Flyway, script de usuário de aplicação, `docker-compose.yml` e [documentação de arquitetura](docs/arquitetura/README.md). |
+| [ES2-30](https://gabrielhochmann.atlassian.net/browse/ES2-30), [ES2-31](https://gabrielhochmann.atlassian.net/browse/ES2-31), [ES2-33](https://gabrielhochmann.atlassian.net/browse/ES2-33) e [ES2-34](https://gabrielhochmann.atlassian.net/browse/ES2-34) | Melhorias visuais, configuração segura, organização do Kanban e registros formais das sprints. |
+
+---
+
 ## Execução local
 
 Antes de iniciar os serviços pela primeira vez, crie a configuração local a partir do modelo versionado:
