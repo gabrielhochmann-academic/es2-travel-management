@@ -51,7 +51,7 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 |---|---|---|
 | Repositório acadêmico | [GitHub do SGV](https://github.com/gabrielhochmann-academic/es2-travel-management) | Código-fonte, documentação formal, histórico de commits e tags. |
 | Product Backlog e Sprint 1 | [Jira ES2](https://gabrielhochmann.atlassian.net/jira/software/c/projects/ES2/boards/1/backlog) | Acompanhar o backlog geral, a Sprint 1 e o status das issues. |
-| Pull Request da implementação | [PR #1](https://github.com/gabrielhochmann-academic/es2-travel-management/pull/1) | Revisar a implementação antes da integração com `develop`. |
+| Pull Request da implementação | [PR #2](https://github.com/gabrielhochmann-academic/es2-travel-management/pull/2) | Revisar a implementação antes da integração com `develop`. |
 | Central de referências | [Sprint 1 no Confluence](https://gabrielhochmann.atlassian.net/wiki/spaces/ES2/pages/1114113/Sprint+1+Planejamento+e+evid+ncias) | Consultar atalhos para Jira, GitHub e artefatos. Não substitui a documentação formal versionada. |
 
 ## Rastreabilidade da Sprint 1
@@ -62,6 +62,22 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 | [ES2-24](https://gabrielhochmann.atlassian.net/browse/ES2-24) e [ES2-25](https://gabrielhochmann.atlassian.net/browse/ES2-25) | Requisitos, casos de uso e modelo entidade relacionamento da Sprint 1. |
 | [ES2-28](https://gabrielhochmann.atlassian.net/browse/ES2-28), [ES2-29](https://gabrielhochmann.atlassian.net/browse/ES2-29) e [ES2-32](https://gabrielhochmann.atlassian.net/browse/ES2-32) | Migrações Flyway, script de usuário de aplicação, `docker-compose.yml` e [documentação de arquitetura](docs/arquitetura/README.md). |
 | [ES2-30](https://gabrielhochmann.atlassian.net/browse/ES2-30), [ES2-31](https://gabrielhochmann.atlassian.net/browse/ES2-31), [ES2-33](https://gabrielhochmann.atlassian.net/browse/ES2-33) e [ES2-34](https://gabrielhochmann.atlassian.net/browse/ES2-34) | Melhorias visuais, configuração segura, organização do Kanban e registros formais das sprints. |
+| [ES2-36](https://gabrielhochmann.atlassian.net/browse/ES2-36) CI/CD | Workflows de GitHub Actions para testes, build, validação integrada em Docker Compose e publicação de imagens Docker. |
+
+---
+
+## Integração e entrega contínuas
+
+O workflow de integração contínua executa em Pull Requests destinados a `develop` ou `main`, bem como em atualizações dessas branches. Ele executa os testes Maven do backend, gera o build do frontend e inicia os três containers com dados temporários. O teste integrado cria um empregado e uma viagem, verifica a situação inicial `RASCUNHO` e confirma que a interface responde.
+
+Depois de um merge na `main`, o workflow de entrega contínua publica as imagens em [GitHub Container Registry](https://ghcr.io). As imagens recebem uma tag de referência, como `main` ou uma tag de versão `v*`, e uma tag imutável baseada no commit, no formato `sha-<hash-curto>`.
+
+| Imagem | Endereço | Uso |
+|---|---|---|
+| Backend | `ghcr.io/gabrielhochmann-academic/sgv-backend` | API Spring Boot. |
+| Frontend | `ghcr.io/gabrielhochmann-academic/sgv-frontend` | Interface React servida por Nginx. |
+
+> A automação publica imagens de container, mas não realiza deploy da aplicação. A publicação em um ambiente de hospedagem continuará sendo uma decisão separada, com credenciais e ambiente aprovados pela equipe.
 
 ---
 
