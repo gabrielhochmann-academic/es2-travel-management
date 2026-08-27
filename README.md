@@ -70,7 +70,7 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 
 O workflow de integração contínua executa em Pull Requests destinados a `develop` ou `main`, bem como em atualizações dessas branches. Ele executa os testes Maven do backend, gera o build do frontend e inicia os três containers com dados temporários. O teste integrado cria um empregado e uma viagem, verifica a situação inicial `RASCUNHO` e confirma que a interface responde.
 
-Depois de um merge na `main`, o workflow de entrega contínua publica as imagens em [GitHub Container Registry](https://ghcr.io). As imagens recebem uma tag de referência, como `main` ou uma tag de versão `v*`, e uma tag imutável baseada no commit, no formato `sha-<hash-curto>`.
+Depois de um merge na `main`, a integração contínua é executada. Somente após o sucesso dessa execução o workflow de entrega contínua publica as imagens em [GitHub Container Registry](https://ghcr.io). As imagens recebem a tag `main` e uma tag imutável baseada no commit, no formato `sha-<hash-completo>`.
 
 | Imagem | Endereço | Uso |
 |---|---|---|

@@ -1,9 +1,10 @@
 name: Publicar imagens Docker
 
 on:
-  push:
+  workflow_run:
+    workflows: ['Integração contínua']
     branches: [main]
-    tags: ['v*']
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -21,6 +22,7 @@ jobs:
   publish:
     name: Publicar ${{ matrix.component }}
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     strategy:
       fail-fast: false
       matrix:
@@ -34,6 +36,8 @@ jobs:
     steps:
       - name: Obter código
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
       - name: Entrar no GitHub Container Registry
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
@@ -46,9 +50,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}
           tags: |
-            type=sha,prefix=sha-
-            type=ref,event=branch
-            type=ref,event=tag
+            type=raw,value=main,enable=${{ github.event_name == 'workflow_run' }}
+            type=raw,value=sha-${{ github.event.workflow_run.head_sha }},enable=${{ github.event_name == 'workflow_run' }}
+            type=sha,prefix=sha-,enable=${{ github.event_name != 'workflow_run' }}
       - name: Construir e publicar imagem
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
