@@ -52,7 +52,7 @@ jobs:
           tags: |
             type=raw,value=main,enable=${{ github.event_name == 'workflow_run' }}
             type=raw,value=sha-${{ github.event.workflow_run.head_sha }},enable=${{ github.event_name == 'workflow_run' }}
-            type=sha,prefix=sha-,enable=${{ github.event_name != 'workflow_run' }}
+            type=raw,value=sha-${{ github.sha }},enable=${{ github.event_name != 'workflow_run' }}
       - name: Construir e publicar imagem
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
