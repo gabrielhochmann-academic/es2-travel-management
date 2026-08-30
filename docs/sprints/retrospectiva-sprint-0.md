@@ -8,7 +8,7 @@
 
 ## Pontos observados
 
-As orientações posteriores à Sprint 0 indicaram a necessidade de reforçar o acompanhamento no Kanban, separar a visão geral do projeto da visão de cada sprint, relacionar os artefatos às respectivas entregas e formalizar o fechamento de cada ciclo.
+As orientações posteriores à Sprint 0 indicaram a necessidade de reforçar o acompanhamento no Kanban, separar a visão geral do projeto da visão de cada sprint, relacionar os artefatos às respectivas entregas e formalizar o fechamento de cada ciclo. Também foi ressaltada a necessidade de aprimorar a apresentação visual dos artefatos, especialmente do Documento de Visão, com foco na organização das informações e na consistência dos elementos de design.
 
 ## Ações para a Sprint 1
 
