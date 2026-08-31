@@ -1,6 +1,6 @@
 # Sprint 1 — User Stories e Horas da Equipe
 
-## 1. User Stories
+## User Stories
 
 ### US01 — Iniciar cadastro da viagem
 
