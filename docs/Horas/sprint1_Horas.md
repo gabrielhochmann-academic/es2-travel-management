@@ -19,7 +19,7 @@ A Sprint 1 totaliza **60 horas**, distribuídas igualmente entre os três integr
 | **TOTAL**  |                                             |         **60h** | **20h** | **20h** | **20h** |
 
 ### Resumo da Sprint
-
+ 
 | Integrante |   Horas |
 | ---------- | ------: |
 | Gabriel    | **20h** |
