@@ -1,0 +1,57 @@
+@startuml
+left to right direction
+
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam actorStyle stickman
+
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+actor "Empregado" as Empregado
+actor "Gestor" as Gestor
+actor "Administrador / Cadastro" as Admin
+
+rectangle "Sistema de Gestão de Viagens" {
+
+    package "Viagens do Empregado" {
+        usecase "Criar viagem" as UC01
+        usecase "Solicitar viagem" as UC02
+        usecase "Cancelar viagem" as UC03
+        usecase "Editar viagem devolvida" as UC04
+        usecase "Submeter novamente" as UC05
+    }
+
+    package "Análise de Viagens" {
+        usecase "Consultar viagem\npara análise" as UC06
+        usecase "Aprovar viagem" as UC07
+        usecase "Rejeitar viagem" as UC08
+        usecase "Solicitar ajustes" as UC09
+    }
+
+    package "Cadastros" {
+        usecase "Cadastrar empregado" as UC12
+        usecase "Cadastrar cargo" as UC13
+        usecase "Cadastrar área" as UC14
+    }
+}
+
+Empregado --> UC01
+Empregado --> UC02
+Empregado --> UC03
+Empregado --> UC04
+Empregado --> UC05
+
+Gestor --> UC06
+Gestor --> UC07
+Gestor --> UC08
+Gestor --> UC09
+
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+
+@enduml
