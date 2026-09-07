@@ -1,4 +1,4 @@
-# Sprint 1 — User Stories e Horas da Equipe
+# Sprint 1 — User Stories
 
 ## User Stories
  
