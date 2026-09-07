@@ -38,6 +38,8 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 | [Arquitetura do SGV](docs/arquitetura/README.md) | Relação entre interface, API, banco de dados e Docker Compose. |
 | [Encerramento da Sprint 0](docs/sprints/sprint-0.md) | Baseline de artefatos identificada pela tag `sprint-0`. |
 | [Encerramento da Sprint 1](docs/sprints/sprint-1.md) | Baseline de artefatos identificada pela tag `sprint-1`. |
+| [Horas](docs/Horas) | Horas Trabalhadas e Burndown Chart. |
+| [User Stories](docs/userStories) | Funcionalidade do Software. |
 
 ---
 
