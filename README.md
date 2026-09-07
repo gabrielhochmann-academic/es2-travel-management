@@ -34,7 +34,7 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 |---|---|
 | [Documento de Visão](docs/visao/Documento-de-Visao-SGV.docx) | Problema, valor, escopo, usuários e prioridades do SGV. |
 | [Requisitos do produto](docs/requisitos.md) | Capacidades, regras de negócio e restrições técnicas. |
-| [UC01 - Registrar viagem](docs/casos-de-uso/UC01-Registrar-Viagem.md) | Jornada principal do colaborador para iniciar uma solicitação. |
+| [Casos de Uso](docs/casos-de-uso) |  Descrição Textual e Visual. |
 | [Arquitetura do SGV](docs/arquitetura/README.md) | Relação entre interface, API, banco de dados e Docker Compose. |
 | [Encerramento da Sprint 0](docs/sprints/sprint-0.md) | Baseline de artefatos identificada pela tag `sprint-0`. |
 
