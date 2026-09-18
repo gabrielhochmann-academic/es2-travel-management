@@ -17,7 +17,12 @@ public class Trip {
     @Column(nullable = false) private String transportMode;
     @Column(nullable = false) private String responsibleName;
     @Enumerated(EnumType.STRING) @Column(nullable = false) private TripStatus status;
-    @Column(nullable = false, precision = 12, scale = 2) private BigDecimal estimatedCost = BigDecimal.ZERO;
+
+    /** Funcionalidade CUSTOS: apenas estas três categorias compõem o custo da viagem. */
+    @Column(nullable = false, precision = 12, scale = 2) private BigDecimal transportCost = BigDecimal.ZERO;
+    @Column(nullable = false, precision = 12, scale = 2) private BigDecimal lodgingCost = BigDecimal.ZERO;
+    @Column(nullable = false, precision = 12, scale = 2) private BigDecimal taxiCost = BigDecimal.ZERO;
+
     @Column(nullable = false) private OffsetDateTime createdAt;
     protected Trip() { }
     public Trip(String destination, LocalDate departureDate, LocalDate returnDate, String reason, String transportMode, String responsibleName) {
@@ -26,6 +31,15 @@ public class Trip {
     }
     public UUID getId() { return id; } public String getDestination() { return destination; } public LocalDate getDepartureDate() { return departureDate; }
     public LocalDate getReturnDate() { return returnDate; } public String getReason() { return reason; } public String getTransportMode() { return transportMode; }
-    public String getResponsibleName() { return responsibleName; } public TripStatus getStatus() { return status; } public BigDecimal getEstimatedCost() { return estimatedCost; }
+    public String getResponsibleName() { return responsibleName; } public TripStatus getStatus() { return status; }
+    public BigDecimal getTransportCost() { return transportCost; }
+    public BigDecimal getLodgingCost() { return lodgingCost; }
+    public BigDecimal getTaxiCost() { return taxiCost; }
+    /** Custo total = deslocamento + hospedagem + táxi (nunca é digitado, sempre calculado). */
+    public BigDecimal getTotalCost() { return transportCost.add(lodgingCost).add(taxiCost); }
     public void updateStatus(TripStatus status) { this.status = status; }
+    /** Funcionalidade CUSTOS: grava os três custos informados. */
+    public void defineCosts(BigDecimal transportCost, BigDecimal lodgingCost, BigDecimal taxiCost) {
+        this.transportCost = transportCost; this.lodgingCost = lodgingCost; this.taxiCost = taxiCost;
+    }
 }
