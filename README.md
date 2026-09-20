@@ -41,6 +41,7 @@ O SGV centraliza informações que normalmente ficam dispersas entre planilhas, 
 | [Encerramento da Sprint 1](docs/sprints/sprint-1.md) | Baseline de artefatos identificada pela tag `sprint-1`. |
 | [Encerramento da Sprint 2](docs/sprints/sprint-2.md) | Baseline de artefatos identificada pela tag `sprint-2`. |
 | [Encerramento da Sprint 3](docs/sprints/sprint-3.md) | Baseline de artefatos identificada pela tag `sprint-3`. |
+| [Encerramento da Sprint 3](docs/sprints/sprint-4.md) | Baseline de artefatos identificada pela tag `sprint-3`. |
 | [Horas](docs/Horas) | Horas Trabalhadas e Burndown Chart. |
 | [User Stories](docs/User-Stories) | Funcionalidade do Software. |
 
