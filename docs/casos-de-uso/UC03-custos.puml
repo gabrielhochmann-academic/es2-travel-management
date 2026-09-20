@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam actorStyle stickman
+
+actor "Colaborador" as Colaborador
+actor "Gestor" as Gestor
+
+rectangle "Sistema de Gestão de Viagens" {
+  usecase "Informar custo\nda viagem" as UC03
+  usecase "Consultar custo\nda viagem" as UC04
+  usecase "Visualizar painel\nde custos" as UC05
+}
+
+Colaborador --> UC03
+Colaborador --> UC04
+Colaborador --> UC05
+Gestor --> UC04
+Gestor --> UC05
+@enduml
