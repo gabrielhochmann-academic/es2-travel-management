@@ -12,7 +12,7 @@ A Sprint 3 totaliza **15 horas**.
 | **TOTAL**  |                                             |         **15h** |  **3h** | **5h**  | **7h**  |
 
 ### Resumo da Sprint
- 
+  
 | Integrante |   Horas |
 | ---------- | ------: |
 | Gabriel    | **3h**  |
