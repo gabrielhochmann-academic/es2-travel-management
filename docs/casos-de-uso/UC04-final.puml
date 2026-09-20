@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam actorStyle stickman
+
+actor "Gestor" as Gestor
+actor "Equipe de Desenvolvimento" as Equipe
+
+rectangle "Sistema de Gestão de Viagens" {
+  usecase "Validar versão\nfinal do sistema" as UC06
+  usecase "Corrigir bugs" as UC07
+  usecase "Finalizar\ndocumentação" as UC08
+}
+
+Gestor --> UC06
+
+Equipe --> UC06
+Equipe --> UC07
+Equipe --> UC08
+
+@enduml
