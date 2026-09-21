@@ -3,6 +3,8 @@ package br.edu.unioeste.es2.sgv.trip;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,5 +31,39 @@ public class TripService {
         trip.updateStatus(request.status());
         return TripResponse.from(repository.save(trip));
     }
+
+    /** Funcionalidade CUSTOS — grava os três custos informados; o total é sempre calculado (nunca digitado). */
+    public TripResponse updateCosts(UUID id, UpdateCostsRequest request) {
+        Trip trip = find(id);
+        trip.defineCosts(request.transportCost(), request.lodgingCost(), request.taxiCost());
+        return TripResponse.from(repository.save(trip));
+    }
+
+    /** Funcionalidade CUSTOS — indicadores do dashboard, calculados a partir de todas as viagens do banco. */
+    public CostIndicatorsResponse costIndicators() {
+        List<Trip> trips = repository.findAll();
+
+        BigDecimal grandTotal = trips.stream().map(Trip::getTotalCost).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal average = trips.isEmpty()
+                ? BigDecimal.ZERO
+                : grandTotal.divide(BigDecimal.valueOf(trips.size()), 2, RoundingMode.HALF_UP);
+
+        BigDecimal totalTransport = trips.stream().map(Trip::getTransportCost).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalLodging = trips.stream().map(Trip::getLodgingCost).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalTaxi = trips.stream().map(Trip::getTaxiCost).reduce(BigDecimal.ZERO, BigDecimal::add);
+        List<CategoryIndicatorResponse> byCategory = List.of(
+                new CategoryIndicatorResponse("Deslocamento", totalTransport),
+                new CategoryIndicatorResponse("Hospedagem", totalLodging),
+                new CategoryIndicatorResponse("Táxi", totalTaxi)
+        ).stream().sorted((a, b) -> b.total().compareTo(a.total())).toList();
+
+        TripCostSummaryResponse mostExpensive = trips.stream()
+                .max((a, b) -> a.getTotalCost().compareTo(b.getTotalCost()))
+                .map(t -> new TripCostSummaryResponse(t.getId(), t.getDestination(), t.getTotalCost()))
+                .orElse(null);
+
+        return new CostIndicatorsResponse(trips.size(), grandTotal, average, byCategory, mostExpensive);
+    }
+
     private Trip find(UUID id) { return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Viagem não encontrada.")); }
 }
