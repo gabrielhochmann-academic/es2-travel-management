@@ -28,7 +28,7 @@ npm --prefix frontend ci
 npm --prefix frontend run build
 ```
 
-O workflow `.github/workflows/ci.yml` repete essas verificações em pushes e pull requests para a `main`.
+O workflow `.github/workflows/ci.yml` está configurado para repetir essas verificações. A validação local foi concluída, mas a primeira execução no GitHub terminou com `startup_failure` antes da criação dos jobs. Essa limitação foi registrada no Jira e não é apresentada como CI aprovada.
 
 ## Débito técnico remanescente
 
