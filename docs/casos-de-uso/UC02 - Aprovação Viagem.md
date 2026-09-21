@@ -1,4 +1,4 @@
-# Diagrama de Casos de Uso — SGV
+# Diagrama de Casos de Uso : SGV
 
 ## Atores
 

@@ -12,6 +12,8 @@ import java.util.List;
  */
 public record CostIndicatorsResponse(
         int tripCount,
+        long approvedTripCount,
+        long rejectedTripCount,
         BigDecimal grandTotalCost,
         BigDecimal averageCostPerTrip,
         List<CategoryIndicatorResponse> costByCategory,

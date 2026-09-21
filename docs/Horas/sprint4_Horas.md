@@ -1,4 +1,4 @@
-## Horas da Equipe — Sprint 4
+## Horas da Equipe : Sprint 4
 
 A Sprint 4 totaliza **45 horas**.
 

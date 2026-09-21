@@ -1,4 +1,4 @@
-## Horas da Equipe — Sprint 2
+## Horas da Equipe : Sprint 2
 
 A Sprint 1 totaliza **60 horas**, distribuídas igualmente entre os três integrantes, com **20 horas para cada um**.
 

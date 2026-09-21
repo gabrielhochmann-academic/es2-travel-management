@@ -2,90 +2,111 @@
 
 > **SGV - Sistema de Gestão de Viagens**
 >
-> Uma aplicação web para organizar o planejamento, a aprovação e o acompanhamento de viagens corporativas.
+> Aplicação acadêmica para planejar viagens, acompanhar aprovações e consolidar custos.
 
-O SGV centraliza informações que normalmente ficam dispersas entre planilhas, e-mails e mensagens. A proposta é oferecer ao colaborador uma jornada clara de solicitação e ao gestor mais visibilidade para decidir e acompanhar as viagens da organização.
+## Estado atual
 
-## Visão rápida do produto
+O projeto possui frontend React, API Spring Boot, PostgreSQL e execução por Docker Compose. A tela principal de viagens ainda funciona como demonstrador com estado local. O painel de custos consome a API e persiste os valores no PostgreSQL.
 
-| Para o colaborador | Para o gestor | Para a organização |
-|---|---|---|
-| Registra e acompanha a própria solicitação de viagem. | Analisa solicitações e toma decisões de aprovação ou rejeição. | Mantém informações organizadas para consultas e indicadores futuros. |
-
-> **Sprint 0:** a interface React funciona como demonstrador visual com estado local. A API Spring Boot e o PostgreSQL foram validados com Docker Compose. A integração entre a interface e a API será tratada nas próximas sprints.
-
----
-
-## Arquitetura e tecnologias
-
-| Camada | Tecnologia | Responsabilidade |
-|---|---|---|
-| **Interface** | React, TypeScript e Vite | Apresentar a experiência do usuário. |
-| **API** | Spring Boot e Java 21 | Aplicar regras de negócio e disponibilizar endpoints REST. |
-| **Dados** | PostgreSQL 16 | Persistir informações sobre viagens. |
-| **Execução** | Docker Compose | Subir os serviços de forma integrada no ambiente local. |
-| **Gestão** | GitHub e Jira | Versionar artefatos e acompanhar o trabalho da equipe. |
-
----
-
-## Navegue pelos artefatos
-
-| Artefato | O que ele comunica |
+| Capacidade | Estado na versão final |
 |---|---|
-| [Documento de Visão](docs/visao/Documento-de-Visao-SGV.docx) | Problema, valor, escopo, usuários e prioridades do SGV. |
-| [Requisitos do produto](docs/requisitos.md) | Capacidades, regras de negócio e restrições técnicas. |
-| [Casos de Uso](docs/casos-de-uso) |  Descrição Textual e Visual. |
-| [MER](docs/MER) |  Modelo Entidade Relacionamento. |
-| [Arquitetura do SGV](docs/arquitetura/README.md) | Relação entre interface, API, banco de dados e Docker Compose. |
-| [Encerramento da Sprint 0](docs/sprints/sprint-0.md) | Baseline de artefatos identificada pela tag `sprint-0`. |
-| [Encerramento da Sprint 1](docs/sprints/sprint-1.md) | Baseline de artefatos identificada pela tag `sprint-1`. |
-| [Encerramento da Sprint 2](docs/sprints/sprint-2.md) | Baseline de artefatos identificada pela tag `sprint-2`. |
-| [Encerramento da Sprint 3](docs/sprints/sprint-3.md) | Baseline de artefatos identificada pela tag `sprint-3`. |
-| [Encerramento da Sprint 4](docs/sprints/sprint-4.md) | Baseline de artefatos identificada pela tag `sprint-4`. |
-| [Horas](docs/Horas) | Horas Trabalhadas e Burndown Chart. |
-| [User Stories](docs/User-Stories) | Funcionalidade do Software. |
+| Criar e listar viagens pela API | Implementado |
+| Submeter viagem | Implementado |
+| Aprovar ou rejeitar viagem | Implementado |
+| Registrar deslocamento, hospedagem e táxi | Implementado |
+| Calcular custo total | Implementado no backend |
+| Exibir indicadores de custos e situações | Implementado no painel de custos |
+| Integrar a tela principal de viagens à API | Pendente |
+| Cancelar viagem e solicitar ajustes | Pendente |
+| Validar perfil de gestor | Pendente |
+| Manter histórico de situações e de cargo/área | Pendente |
+| Cadastrar empregado, cargo e área | Pendente |
 
----
+## Tecnologias
+
+| Camada | Tecnologia |
+|---|---|
+| Interface | React, TypeScript e Vite |
+| API | Spring Boot e Java 21 |
+| Dados | PostgreSQL 16 |
+| Execução | Docker Compose |
+| Integração contínua | GitHub Actions |
+| Gestão | GitHub e Jira |
+
+## Artefatos
+
+| Artefato | Localização |
+|---|---|
+| Documento de Visão | [docs/visao/Documento-de-Visao-SGV.docx](docs/visao/Documento-de-Visao-SGV.docx) |
+| Requisitos | [docs/requisitos.md](docs/requisitos.md) |
+| Casos de uso | [docs/casos-de-uso](docs/casos-de-uso) |
+| Modelo entidade-relacionamento | [docs/MER/MER-SGV.md](docs/MER/MER-SGV.md) |
+| Arquitetura | [docs/arquitetura/README.md](docs/arquitetura/README.md) |
+| Encerramentos por sprint | [docs/sprints](docs/sprints) |
+| Revisões e retrospectivas consolidadas | [docs/sprints/revisoes-e-retrospectivas.md](docs/sprints/revisoes-e-retrospectivas.md) |
+| Horas e burndown | [docs/Horas](docs/Horas) |
+| User Stories | [docs/User-Stories](docs/User-Stories) |
 
 ## Execução local
 
-Antes de iniciar os serviços pela primeira vez, crie a configuração local a partir do modelo versionado:
+Crie a configuração local a partir do modelo versionado:
 
 ```bash
 cp .env.example .env
 ```
 
-Abra o arquivo `.env` e ajuste a senha local do PostgreSQL. Esse arquivo é ignorado pelo Git e não deve ser compartilhado. Se já houver um volume `postgres_data` criado com outra credencial, mantenha a configuração compatível ou recrie o ambiente com `docker compose down -v` antes de subir novamente. Esse comando remove os dados locais do banco.
+Abra `.env` e defina uma senha local. O arquivo é ignorado pelo Git e não deve ser compartilhado.
 
-Com o **Docker Desktop** em execução, abra um terminal na raiz do repositório e execute:
+Com o Docker Desktop em execução:
 
 ```bash
 docker compose up --build
 ```
 
-| Serviço | Endereço | Finalidade |
-|---|---|---|
-| Interface | `http://localhost:5173` | Acessar o demonstrador visual do SGV. |
-| API | `http://localhost:8080` | Acessar os serviços de negócio. |
-| Lista de viagens | `http://localhost:8080/api/trips` | Consultar as viagens persistidas pela API. |
-| PostgreSQL | `localhost:5432` | Acessar o banco de dados local, quando necessário. |
+| Serviço | Endereço |
+|---|---|
+| Interface | `http://localhost:5173` |
+| API | `http://localhost:8080` |
+| Viagens | `http://localhost:8080/api/trips` |
+| Indicadores de custos | `http://localhost:8080/api/trips/indicators/costs` |
+| PostgreSQL | `localhost:5432` |
 
-Para encerrar a execução interativa, use `Ctrl + C`. Os dados do PostgreSQL permanecem no volume nomeado `postgres_data`.
+Para recriar o banco local, use `docker compose down -v`. Esse comando remove os dados do volume local.
 
----
+## Validação
 
-## Organização do repositório
+```bash
+mvn --file backend/pom.xml test
+npm --prefix frontend ci
+npm --prefix frontend run build
+```
+
+O workflow `.github/workflows/ci.yml` executa essas validações em pushes e pull requests para a `main`.
+
+## Versionamento por sprint
+
+O padrão atual é `sprint-<número>`, em letras minúsculas e sem espaços. A tag deve apontar para um commit integrado na `main`.
+
+```bash
+git fetch --tags
+git switch --detach sprint-3
+```
+
+Para recuperar somente um componente:
+
+```bash
+git restore --source=sprint-3 -- frontend/
+```
+
+As tags históricas devem representar exatamente o código e os artefatos integrados no encerramento de cada sprint. Divergências históricas identificadas estão registradas na documentação de cada sprint e no débito técnico, sem reescrever silenciosamente o histórico Git.
+
+## Estrutura
 
 ```text
 .
 ├── backend/            API Spring Boot
 ├── database/           Estrutura versionada do PostgreSQL
-│   └── trips.sql       Tabela de viagens e índices relacionados
-├── docs/               Visão de produto, requisitos, casos de uso e arquitetura
+├── docs/               Artefatos acadêmicos e registros das sprints
 ├── frontend/           Interface React
-└── docker-compose.yml  Execução integrada dos serviços
+└── docker-compose.yml  Execução integrada
 ```
-
-## Versionamento por sprint
-
-Ao término de cada sprint, a equipe cria uma tag anotada na `main` seguindo o padrão `sprint-<número>`, como `sprint-0`, `sprint-1` e `sprint-2`. A tag identifica a versão integrada de código, scripts e documentação correspondente ao encerramento da sprint.

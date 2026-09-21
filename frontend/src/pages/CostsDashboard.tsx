@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
  *   GET  /api/trips/indicators/costs   → indicadores do dashboard
  *
  * As chamadas usam caminho relativo "/api", resolvido pelo proxy do Vite (dev)
- * e pelo nginx (Docker) — não dependem de host/porta fixos.
+ * e pelo nginx (Docker) : não dependem de host/porta fixos.
  */
 
 type Trip = {
@@ -27,6 +27,8 @@ type TripCostSummary = { id: string; destination: string; totalCost: number } | 
 
 type Indicators = {
   tripCount: number;
+  approvedTripCount: number;
+  rejectedTripCount: number;
   grandTotalCost: number;
   averageCostPerTrip: number;
   costByCategory: CategoryIndicator[];
@@ -128,7 +130,7 @@ export default function CostsDashboard() {
       <h1>Painel de custos</h1>
       <p className="subtitle">Custo de deslocamento + hospedagem + táxi = custo total, calculado pelo backend e persistido no banco.</p>
 
-      {error && <p className="custos-erro">{error} — confira se o backend está rodando.</p>}
+      {error && <p className="custos-erro">{error} : confira se o backend está rodando.</p>}
       {loading && <p>Carregando dados do backend…</p>}
 
       {!loading && indicators && (
@@ -144,13 +146,21 @@ export default function CostsDashboard() {
               <b>{formatCurrency(indicators.averageCostPerTrip)}</b>
             </div>
             <div className="custos-indicador">
+              <span>Viagens aprovadas</span>
+              <b>{indicators.approvedTripCount}</b>
+            </div>
+            <div className="custos-indicador">
+              <span>Viagens rejeitadas</span>
+              <b>{indicators.rejectedTripCount}</b>
+            </div>
+            <div className="custos-indicador">
               <span>Categoria de maior peso</span>
-              <b>{indicators.costByCategory[0]?.category ?? "—"}</b>
+              <b>{indicators.costByCategory[0]?.category ?? "Sem dados"}</b>
               <small>{formatCurrency(indicators.costByCategory[0]?.total ?? 0)} no total</small>
             </div>
             <div className="custos-indicador">
               <span>Viagem mais cara</span>
-              <b>{indicators.mostExpensiveTrip?.destination ?? "—"}</b>
+              <b>{indicators.mostExpensiveTrip?.destination ?? "Sem dados"}</b>
               <small>{indicators.mostExpensiveTrip ? formatCurrency(indicators.mostExpensiveTrip.totalCost) : "sem viagens"}</small>
             </div>
           </div>
