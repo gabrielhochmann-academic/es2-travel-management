@@ -2,7 +2,7 @@
 
 ## User Stories
 
-### US01 — Criar viagem como rascunho
+### US01 : Criar viagem como rascunho
 
 **Como** empregado,  
 **quero** criar uma viagem inicialmente como Rascunho,  
@@ -16,7 +16,7 @@
 
 ---
 
-### US02 — Solicitar viagem
+### US02 : Solicitar viagem
 
 **Como** empregado solicitante,  
 **quero** enviar minha viagem para análise,  
@@ -30,7 +30,7 @@
 
 ---
 
-### US03 — Cancelar viagem
+### US03 : Cancelar viagem
 
 **Como** empregado solicitante,  
 **quero** cancelar uma viagem em Rascunho,  
@@ -45,7 +45,7 @@
 
 ---
 
-### US04 — Analisar viagem
+### US04 : Analisar viagem
 
 **Como** gestor,  
 **quero** visualizar viagens Solicitadas,  
@@ -59,7 +59,7 @@
 
 ---
 
-### US05 — Aprovar viagem
+### US05 : Aprovar viagem
 
 **Como** gestor,  
 **quero** aprovar uma viagem,  
@@ -75,7 +75,7 @@
 
 ---
 
-### US06 — Rejeitar viagem
+### US06 : Rejeitar viagem
 
 **Como** gestor,  
 **quero** rejeitar uma viagem informando uma justificativa,  
@@ -92,7 +92,7 @@
 
 ---
 
-### US07 — Solicitar ajustes
+### US07 : Solicitar ajustes
 
 **Como** gestor,  
 **quero** devolver uma viagem com uma descrição dos ajustes necessários,  
@@ -108,7 +108,7 @@
 
 ---
 
-### US08 — Corrigir viagem
+### US08 : Corrigir viagem
 
 **Como** empregado solicitante,  
 **quero** editar uma viagem devolvida para ajustes,  
@@ -123,7 +123,7 @@
 
 ---
 
-### US09 — Resubmeter viagem
+### US09 : Resubmeter viagem
 
 **Como** empregado solicitante,  
 **quero** submeter novamente a viagem corrigida,  
@@ -138,7 +138,7 @@
 
 ---
 
-### US10 — Consultar histórico da viagem
+### US10 : Consultar histórico da viagem
 
 **Como** usuário do sistema,  
 **quero** consultar o histórico de status da viagem,  
@@ -154,7 +154,7 @@
 
 ---
 
-### US11 — Manter histórico do empregado
+### US11 : Manter histórico do empregado
 
 **Como** responsável pelo cadastro,  
 **quero** preservar as alterações de cargo e área do empregado,  
@@ -169,7 +169,7 @@
 
 ---
 
-### US12 — Cadastrar empregado
+### US12 : Cadastrar empregado
 
 **Como** responsável pelo cadastro,  
 **quero** cadastrar empregados com matrícula, nome, cargo e área,  
@@ -184,7 +184,7 @@
 
 ---
 
-### US13 — Cadastrar cargo
+### US13 : Cadastrar cargo
 
 **Como** responsável pelo cadastro,  
 **quero** manter os cargos permitidos,  
@@ -198,7 +198,7 @@
 
 ---
 
-### US14 — Cadastrar área
+### US14 : Cadastrar área
 
 **Como** responsável pelo cadastro,  
 **quero** cadastrar áreas,  

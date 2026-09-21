@@ -32,14 +32,14 @@ public class TripService {
         return TripResponse.from(repository.save(trip));
     }
 
-    /** Funcionalidade CUSTOS — grava os três custos informados; o total é sempre calculado (nunca digitado). */
+    /** Funcionalidade CUSTOS: grava os três custos informados; o total é sempre calculado (nunca digitado). */
     public TripResponse updateCosts(UUID id, UpdateCostsRequest request) {
         Trip trip = find(id);
         trip.defineCosts(request.transportCost(), request.lodgingCost(), request.taxiCost());
         return TripResponse.from(repository.save(trip));
     }
 
-    /** Funcionalidade CUSTOS — indicadores do dashboard, calculados a partir de todas as viagens do banco. */
+    /** Funcionalidade CUSTOS: indicadores do dashboard, calculados a partir de todas as viagens do banco. */
     public CostIndicatorsResponse costIndicators() {
         List<Trip> trips = repository.findAll();
 
@@ -47,6 +47,8 @@ public class TripService {
         BigDecimal average = trips.isEmpty()
                 ? BigDecimal.ZERO
                 : grandTotal.divide(BigDecimal.valueOf(trips.size()), 2, RoundingMode.HALF_UP);
+        long approvedCount = trips.stream().filter(trip -> trip.getStatus() == TripStatus.APROVADA).count();
+        long rejectedCount = trips.stream().filter(trip -> trip.getStatus() == TripStatus.REJEITADA).count();
 
         BigDecimal totalTransport = trips.stream().map(Trip::getTransportCost).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal totalLodging = trips.stream().map(Trip::getLodgingCost).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -62,7 +64,7 @@ public class TripService {
                 .map(t -> new TripCostSummaryResponse(t.getId(), t.getDestination(), t.getTotalCost()))
                 .orElse(null);
 
-        return new CostIndicatorsResponse(trips.size(), grandTotal, average, byCategory, mostExpensive);
+        return new CostIndicatorsResponse(trips.size(), approvedCount, rejectedCount, grandTotal, average, byCategory, mostExpensive);
     }
 
     private Trip find(UUID id) { return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Viagem não encontrada.")); }

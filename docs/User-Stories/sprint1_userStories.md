@@ -1,8 +1,8 @@
-# Sprint 1 — User Stories
+# Sprint 1 : User Stories
 
 ## User Stories
  
-### US01 — Iniciar cadastro da viagem
+### US01 : Iniciar cadastro da viagem
 
 **Como** colaborador,  
 **quero** iniciar o cadastro de uma nova viagem,  
@@ -14,7 +14,7 @@
 
 ---
 
-### US02 — Preencher dados da viagem
+### US02 : Preencher dados da viagem
 
 **Como** colaborador,  
 **quero** informar os dados da viagem,  
@@ -31,7 +31,7 @@
 
 ---
 
-### US03 — Validar cadastro da viagem
+### US03 : Validar cadastro da viagem
 
 **Como** colaborador,  
 **quero** que os dados informados sejam validados no cadastro,  

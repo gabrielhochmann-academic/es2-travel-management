@@ -1,81 +1,80 @@
 # Requisitos do Produto - SGV
 
-> **Propósito:** transformar o controle de viagens corporativas em um fluxo único, rastreável e fácil de acompanhar por colaboradores e gestores.
-
-## Contexto e objetivo
-
-O **Sistema de Gestão de Viagens (SGV)** organiza o registro e o acompanhamento de viagens corporativas. Nesta etapa, o produto concentra-se no ciclo essencial de uma solicitação: a viagem é planejada, registrada como rascunho, submetida à análise e decidida pelo gestor.
-
-> **Resultado esperado:** reduzir informações dispersas e tornar a situação de cada viagem clara para quem solicita, analisa e acompanha o processo.
-
-## Estado atual da Sprint 0
-
-Os requisitos deste documento representam a direção do produto e não devem ser interpretados como lista completa de funcionalidades já integradas na interface. Na Sprint 0, a API disponibiliza o cadastro, a consulta, a submissão e a decisão de viagens; a interface React ainda demonstra o fluxo com estado local. O controle de despesas, a separação de perfis e a integração frontend-API permanecem como evoluções planejadas.
-
----
-
-## Escopo do exemplo técnico
-
-| Incluído | Não contemplado nesta etapa |
-|---|---|
-| Registro de viagem com destino, período, motivo, transporte e responsável. | Integrações com ERP, sistemas de passagens, pagamento eletrônico e autenticação corporativa. |
-| Consulta de viagens registradas. | Automação de despesas, pagamentos ou reservas externas. |
-| Fluxo de Rascunho, Solicitada, Aprovada e Rejeitada. | Módulos adicionais além do fluxo acadêmico priorizado. |
-
----
+> **Propósito:** organizar o planejamento, a aprovação e os custos de viagens corporativas com rastreabilidade.
 
 ## Requisitos funcionais
 
-| Código | Capacidade do produto | Critério de entendimento |
+| Código | Requisito | Estado na versão final |
 |---|---|---|
-| **RF01** | Registrar viagem | O sistema permite informar destino, período, motivo, meio de transporte e responsável. |
-| **RF02** | Iniciar como rascunho | Toda viagem recém-registrada recebe a situação **Rascunho**. |
-| **RF03** | Consultar viagens | O sistema permite visualizar as viagens registradas. |
-| **RF04** | Submeter para análise | Uma viagem em rascunho pode ser encaminhada para decisão. |
-| **RF05** | Decidir solicitação | Uma viagem submetida pode ser aprovada ou rejeitada por um gestor. |
-
----
+| RF01 | Registrar viagem com destino, saída, retorno, motivo, transporte e responsável | API implementada; tela principal local |
+| RF02 | Iniciar viagem em Rascunho | Implementado |
+| RF03 | Consultar viagens | API implementada; tela principal local |
+| RF04 | Submeter viagem para análise | Implementado na API |
+| RF05 | Cancelar viagem em Rascunho | Pendente |
+| RF06 | Aprovar viagem solicitada | Implementado na API |
+| RF07 | Rejeitar viagem solicitada com justificativa | Implementado na API |
+| RF08 | Solicitar ajustes e permitir ressubmissão | Pendente |
+| RF09 | Registrar histórico de situações com data e responsável | Pendente |
+| RF10 | Cadastrar empregado com matrícula, nome, cargo e área | Pendente |
+| RF11 | Cadastrar cargos Colaborador e Gestor | Pendente |
+| RF12 | Cadastrar áreas | Pendente |
+| RF13 | Preservar histórico de cargo e área do empregado | Pendente |
+| RF14 | Registrar custo de deslocamento, hospedagem e táxi | Implementado |
+| RF15 | Calcular custo total da viagem | Implementado no backend |
+| RF16 | Exibir painel com pelo menos três indicadores | Implementado |
 
 ## Regras de negócio
 
-| Código | Regra | Impacto para o usuário |
+| Código | Regra | Estado |
 |---|---|---|
-| **RN01** | Destino, período, motivo, meio de transporte e responsável são obrigatórios. | O registro só é concluído com os dados essenciais da viagem. |
-| **RN02** | A data de retorno deve ser igual ou posterior à data de saída. | O período informado deve ser válido. |
-| **RN03** | O registro inicial possui a situação **Rascunho**. | A viagem ainda pode ser revisada antes da análise. |
-| **RN04** | Somente viagens em rascunho podem ser submetidas. | O fluxo mantém uma ordem clara de transições. |
-| **RN05** | Somente viagens submetidas podem ser aprovadas ou rejeitadas. | A decisão ocorre somente após o encaminhamento formal. |
-| **RN06** | A rejeição exige justificativa. | O solicitante recebe contexto para uma eventual revisão. |
+| RN01 | Todos os dados básicos da viagem são obrigatórios | Implementado na API |
+| RN02 | O retorno deve ser igual ou posterior à saída | Implementado |
+| RN03 | A situação inicial é Rascunho | Implementado |
+| RN04 | Somente Rascunho pode ser submetida | Implementado |
+| RN05 | Somente Solicitada pode ser aprovada ou rejeitada | Implementado |
+| RN06 | Rejeição exige justificativa | Implementado |
+| RN07 | Somente Gestor decide uma viagem | Pendente por ausência de autenticação e perfil |
+| RN08 | Matrícula segue o formato `XXXX-X`, somente dígitos | Pendente |
+| RN09 | Custo total é deslocamento + hospedagem + táxi | Implementado |
+| RN10 | Custos não podem ser negativos | Implementado na API |
 
----
+## Fluxo de situação
+
+### Implementado
+
+```text
+Rascunho -> Solicitada -> Aprovada
+                      -> Rejeitada
+```
+
+### Fluxo completo solicitado e ainda pendente
+
+```text
+Rascunho -> Solicitada -> Aprovada
+        |             -> Rejeitada
+        |             -> Ajustes solicitados -> Rascunho
+        -> Cancelada
+```
+
+## Indicadores disponíveis
+
+O endpoint `GET /api/trips/indicators/costs` fornece:
+
+1. quantidade total de viagens;
+2. quantidade de viagens aprovadas;
+3. quantidade de viagens rejeitadas;
+4. custo total;
+5. custo médio por viagem;
+6. custos por categoria;
+7. viagem de maior custo.
 
 ## Restrições técnicas
 
-| Código | Diretriz | Decisão adotada |
+| Código | Diretriz | Decisão |
 |---|---|---|
-| **RT01** | Interface web | React e TypeScript. |
-| **RT02** | API de negócio | Spring Boot com Java 21. |
-| **RT03** | Persistência | PostgreSQL. |
-| **RT04** | Execução local integrada | Docker Compose. |
-
----
-
-## Fluxo de situação da viagem
-
-```text
-Rascunho → Solicitada → Aprovada
-                    └→ Rejeitada
-```
-
-| Situação | Significado |
-|---|---|
-| **Rascunho** | Viagem registrada e ainda passível de ajuste pelo colaborador. |
-| **Solicitada** | Viagem encaminhada para análise do gestor. |
-| **Aprovada** | Solicitação aceita e apta a receber despesas no escopo do produto. |
-| **Rejeitada** | Solicitação não aprovada; a decisão exige justificativa. |
-
----
-
-## Referência do escopo
-
-O exemplo técnico da Sprint 0 prioriza o cadastro de viagens e o ciclo de situação descrito acima. A evolução de módulos adicionais será orientada pelo planejamento do produto e pelas próximas sprints.
+| RT01 | Interface web | React e TypeScript |
+| RT02 | API | Spring Boot com Java 21 |
+| RT03 | Persistência | PostgreSQL 16 |
+| RT04 | Execução integrada | Docker Compose |
+| RT05 | Credenciais | Variáveis locais em `.env`, nunca versionadas |
+| RT06 | Validação contínua | GitHub Actions para backend e frontend |

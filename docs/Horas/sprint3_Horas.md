@@ -1,4 +1,4 @@
-## Horas da Equipe — Sprint 3
+## Horas da Equipe : Sprint 3
 
 A Sprint 3 totaliza **15 horas**.
 

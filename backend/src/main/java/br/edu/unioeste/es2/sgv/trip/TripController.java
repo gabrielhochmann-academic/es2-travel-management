@@ -17,9 +17,9 @@ public class TripController {
     @PostMapping("/{id}/submit") public TripResponse submit(@PathVariable UUID id) { return service.submit(id); }
     @PostMapping("/{id}/decision") public TripResponse decide(@PathVariable UUID id, @Valid @RequestBody DecisionRequest request) { return service.decide(id, request); }
 
-    /** Funcionalidade CUSTOS — grava os custos de deslocamento, hospedagem e táxi de uma viagem. */
+    /** Funcionalidade CUSTOS: grava os custos de deslocamento, hospedagem e táxi de uma viagem. */
     @PutMapping("/{id}/costs") public TripResponse updateCosts(@PathVariable UUID id, @Valid @RequestBody UpdateCostsRequest request) { return service.updateCosts(id, request); }
 
-    /** Funcionalidade CUSTOS — indicadores do dashboard (total, médio, ranking por categoria, viagem mais cara). */
+    /** Funcionalidade CUSTOS: indicadores do dashboard (total, médio, ranking por categoria, viagem mais cara). */
     @GetMapping("/indicators/costs") public CostIndicatorsResponse costIndicators() { return service.costIndicators(); }
 }
