@@ -4,57 +4,52 @@
 
 ## Requisitos funcionais
 
-| Código | Requisito | Estado na versão final |
+| Código | Requisito | Estado |
 |---|---|---|
-| RF01 | Registrar viagem com destino, saída, retorno, motivo, transporte e responsável | API implementada; tela principal local |
+| RF01 | Registrar viagem com número, destino, saída, retorno, motivo, transporte e empregado | Implementado |
 | RF02 | Iniciar viagem em Rascunho | Implementado |
-| RF03 | Consultar viagens | API implementada; tela principal local |
-| RF04 | Submeter viagem para análise | Implementado na API |
-| RF05 | Cancelar viagem em Rascunho | Pendente |
-| RF06 | Aprovar viagem solicitada | Implementado na API |
-| RF07 | Rejeitar viagem solicitada com justificativa | Implementado na API |
-| RF08 | Solicitar ajustes e permitir ressubmissão | Pendente |
-| RF09 | Registrar histórico de situações com data e responsável | Pendente |
-| RF10 | Cadastrar empregado com matrícula, nome, cargo e área | Pendente |
-| RF11 | Cadastrar cargos Colaborador e Gestor | Pendente |
-| RF12 | Cadastrar áreas | Pendente |
-| RF13 | Preservar histórico de cargo e área do empregado | Pendente |
+| RF03 | Consultar e editar viagens | Implementado |
+| RF04 | Submeter viagem para análise | Implementado |
+| RF05 | Cancelar viagem em Rascunho | Implementado |
+| RF06 | Aprovar viagem solicitada | Implementado |
+| RF07 | Rejeitar viagem solicitada com justificativa | Implementado |
+| RF08 | Solicitar ajustes e permitir ressubmissão | Implementado |
+| RF09 | Registrar histórico de situações com data e responsável | Implementado |
+| RF10 | Cadastrar empregado com matrícula, nome, cargo e área | Implementado |
+| RF11 | Usar os cargos Colaborador e Gestor | Implementado |
+| RF12 | Cadastrar áreas | Implementado |
+| RF13 | Preservar histórico de cargo e área do empregado | Implementado |
 | RF14 | Registrar custo de deslocamento, hospedagem e táxi | Implementado |
-| RF15 | Calcular custo total da viagem | Implementado no backend |
+| RF15 | Calcular custo total da viagem | Implementado |
 | RF16 | Exibir painel com pelo menos três indicadores | Implementado |
 
 ## Regras de negócio
 
 | Código | Regra | Estado |
 |---|---|---|
-| RN01 | Todos os dados básicos da viagem são obrigatórios | Implementado na API |
+| RN01 | Todos os dados básicos da viagem são obrigatórios | Implementado |
 | RN02 | O retorno deve ser igual ou posterior à saída | Implementado |
 | RN03 | A situação inicial é Rascunho | Implementado |
-| RN04 | Somente Rascunho pode ser submetida | Implementado |
-| RN05 | Somente Solicitada pode ser aprovada ou rejeitada | Implementado |
-| RN06 | Rejeição exige justificativa | Implementado |
-| RN07 | Somente Gestor decide uma viagem | Pendente por ausência de autenticação e perfil |
-| RN08 | Matrícula segue o formato `XXXX-X`, somente dígitos | Pendente |
+| RN04 | Rascunho e Ajustes solicitados podem ser submetidos | Implementado |
+| RN05 | Somente Solicitada pode receber decisão | Implementado |
+| RN06 | Rejeição e solicitação de ajustes exigem justificativa | Implementado |
+| RN07 | Somente empregado com cargo Gestor decide uma viagem | Implementado |
+| RN08 | Matrícula segue o formato `XXXX-X`, somente dígitos | Implementado |
 | RN09 | Custo total é deslocamento + hospedagem + táxi | Implementado |
-| RN10 | Custos não podem ser negativos | Implementado na API |
+| RN10 | Custos não podem ser negativos | Implementado |
+| RN11 | Somente o solicitante edita, submete ou cancela sua viagem | Implementado |
+| RN12 | A viagem preserva cargo e área do solicitante no momento da submissão | Implementado |
 
 ## Fluxo de situação
-
-### Implementado
-
-```text
-Rascunho -> Solicitada -> Aprovada
-                      -> Rejeitada
-```
-
-### Fluxo completo solicitado e ainda pendente
 
 ```text
 Rascunho -> Solicitada -> Aprovada
         |             -> Rejeitada
-        |             -> Ajustes solicitados -> Rascunho
+        |             -> Ajustes solicitados -> edição -> Solicitada
         -> Cancelada
 ```
+
+Cada mudança de situação registra data, responsável e justificativa quando necessária.
 
 ## Indicadores disponíveis
 
@@ -77,4 +72,3 @@ O endpoint `GET /api/trips/indicators/costs` fornece:
 | RT03 | Persistência | PostgreSQL 16 |
 | RT04 | Execução integrada | Docker Compose |
 | RT05 | Credenciais | Variáveis locais em `.env`, nunca versionadas |
-| RT06 | Validação contínua | GitHub Actions para backend e frontend |
