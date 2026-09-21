@@ -81,7 +81,7 @@ npm --prefix frontend ci
 npm --prefix frontend run build
 ```
 
-O workflow `.github/workflows/ci.yml` executa essas validações em pushes e pull requests para a `main`.
+O workflow `.github/workflows/ci.yml` está configurado para executar essas validações em pushes, pull requests e acionamento manual. A entrega foi validada localmente. A primeira execução remota terminou com `startup_failure` antes da criação dos jobs e precisa ser verificada nas configurações do GitHub Actions.
 
 ## Versionamento por sprint
 
