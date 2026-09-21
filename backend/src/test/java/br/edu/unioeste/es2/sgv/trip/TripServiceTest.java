@@ -1,6 +1,7 @@
 package br.edu.unioeste.es2.sgv.trip;
 
 import br.edu.unioeste.es2.sgv.employee.Area;
+import br.edu.unioeste.es2.sgv.employee.Cargo;
 import br.edu.unioeste.es2.sgv.employee.Employee;
 import br.edu.unioeste.es2.sgv.employee.EmployeeRole;
 import br.edu.unioeste.es2.sgv.employee.EmployeeService;
@@ -160,12 +161,15 @@ class TripServiceTest {
 
     private Employee employee(EmployeeRole role, UUID id) {
         Area area = mock(Area.class);
+        Cargo cargo = mock(Cargo.class);
         when(area.getName()).thenReturn("Informática");
+        when(cargo.getName()).thenReturn("Analista de sistemas");
         Employee employee = mock(Employee.class);
         when(employee.getId()).thenReturn(id);
         when(employee.getName()).thenReturn("Ana Silva");
         when(employee.getRegistrationNumber()).thenReturn("1234-5");
         when(employee.getCurrentArea()).thenReturn(area);
+        when(employee.getCurrentCargo()).thenReturn(cargo);
         when(employee.getCurrentRole()).thenReturn(role);
         return employee;
     }

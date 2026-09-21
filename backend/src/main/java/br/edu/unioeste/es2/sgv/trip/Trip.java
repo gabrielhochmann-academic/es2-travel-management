@@ -28,69 +28,33 @@ public class Trip {
 
     @Column(nullable = false, unique = true, length = 20)
     private String tripNumber;
-
-    @Column(nullable = false)
-    private String destination;
-
-    @Column(nullable = false)
-    private LocalDate departureDate;
-
-    @Column(nullable = false)
-    private LocalDate returnDate;
-
-    @Column(nullable = false, length = 500)
-    private String reason;
-
-    @Column(nullable = false)
-    private String transportMode;
+    @Column(nullable = false) private String destination;
+    @Column(nullable = false) private LocalDate departureDate;
+    @Column(nullable = false) private LocalDate returnDate;
+    @Column(nullable = false, length = 500) private String reason;
+    @Column(nullable = false) private String transportMode;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @Column(nullable = false, length = 150)
-    private String employeeName;
-
-    @Column(nullable = false, length = 6)
-    private String employeeRegistrationNumber;
-
-    @Column(nullable = false, length = 100)
-    private String employeeArea;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private EmployeeRole employeeRole;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private TripStatus status;
-
-    @Column(length = 500)
-    private String decisionJustification;
-
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal transportCost = BigDecimal.ZERO;
-
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal lodgingCost = BigDecimal.ZERO;
-
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal taxiCost = BigDecimal.ZERO;
-
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
+    @Column(nullable = false, length = 150) private String employeeName;
+    @Column(nullable = false, length = 6) private String employeeRegistrationNumber;
+    @Column(nullable = false, length = 100) private String employeeArea;
+    @Column(nullable = false, length = 100) private String employeeCargo;
+    @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20) private EmployeeRole employeeRole;
+    @Enumerated(EnumType.STRING) @Column(nullable = false, length = 30) private TripStatus status;
+    @Column(length = 500) private String decisionJustification;
+    @Column(nullable = false, precision = 12, scale = 2) private BigDecimal transportCost = BigDecimal.ZERO;
+    @Column(nullable = false, precision = 12, scale = 2) private BigDecimal lodgingCost = BigDecimal.ZERO;
+    @Column(nullable = false, precision = 12, scale = 2) private BigDecimal taxiCost = BigDecimal.ZERO;
+    @Column(nullable = false) private OffsetDateTime createdAt;
 
     protected Trip() {
     }
 
-    public Trip(
-            String tripNumber,
-            String destination,
-            LocalDate departureDate,
-            LocalDate returnDate,
-            String reason,
-            String transportMode,
-            Employee employee) {
+    public Trip(String tripNumber, String destination, LocalDate departureDate, LocalDate returnDate,
+                String reason, String transportMode, Employee employee) {
         this.tripNumber = tripNumber;
         this.destination = destination;
         this.departureDate = departureDate;
@@ -98,10 +62,7 @@ public class Trip {
         this.reason = reason;
         this.transportMode = transportMode;
         this.employee = employee;
-        this.employeeName = employee.getName();
-        this.employeeRegistrationNumber = employee.getRegistrationNumber();
-        this.employeeArea = employee.getCurrentArea().getName();
-        this.employeeRole = employee.getCurrentRole();
+        snapshotEmployeeAssignment();
         this.status = TripStatus.RASCUNHO;
         this.createdAt = OffsetDateTime.now();
     }
@@ -117,6 +78,7 @@ public class Trip {
     public String getEmployeeName() { return employeeName; }
     public String getEmployeeRegistrationNumber() { return employeeRegistrationNumber; }
     public String getEmployeeArea() { return employeeArea; }
+    public String getEmployeeCargo() { return employeeCargo; }
     public EmployeeRole getEmployeeRole() { return employeeRole; }
     public TripStatus getStatus() { return status; }
     public String getDecisionJustification() { return decisionJustification; }
@@ -142,6 +104,7 @@ public class Trip {
         this.employeeName = employee.getName();
         this.employeeRegistrationNumber = employee.getRegistrationNumber();
         this.employeeArea = employee.getCurrentArea().getName();
+        this.employeeCargo = employee.getCurrentCargo().getName();
         this.employeeRole = employee.getCurrentRole();
     }
 

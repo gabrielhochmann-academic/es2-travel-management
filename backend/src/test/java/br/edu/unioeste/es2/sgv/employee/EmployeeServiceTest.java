@@ -20,16 +20,11 @@ class EmployeeServiceTest {
         EmployeeRepository employees = mock(EmployeeRepository.class);
         when(employees.existsByRegistrationNumber("1234-5")).thenReturn(true);
         EmployeeService service = new EmployeeService(
-                employees,
-                mock(EmploymentHistoryRepository.class),
-                mock(AreaService.class));
+                employees, mock(EmploymentHistoryRepository.class), mock(AreaService.class), mock(CargoService.class));
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
                 () -> service.create(new CreateEmployeeRequest(
-                        "1234-5",
-                        "Ana Silva",
-                        UUID.randomUUID(),
-                        EmployeeRole.COLABORADOR)));
+                        "1234-5", "Ana Silva", UUID.randomUUID(), UUID.randomUUID())));
 
         assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
         verify(employees, never()).save(any());
@@ -40,20 +35,22 @@ class EmployeeServiceTest {
         EmployeeRepository employees = mock(EmployeeRepository.class);
         EmploymentHistoryRepository history = mock(EmploymentHistoryRepository.class);
         AreaService areas = mock(AreaService.class);
+        CargoService cargos = mock(CargoService.class);
         Area area = new Area("Informática");
+        Cargo cargo = new Cargo("Analista de sistemas", EmployeeRole.COLABORADOR);
         UUID areaId = UUID.randomUUID();
+        UUID cargoId = UUID.randomUUID();
         when(areas.find(areaId)).thenReturn(area);
+        when(cargos.find(cargoId)).thenReturn(cargo);
         when(employees.save(any(Employee.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        EmployeeService service = new EmployeeService(employees, history, areas);
+        EmployeeService service = new EmployeeService(employees, history, areas, cargos);
 
         EmployeeResponse response = service.create(new CreateEmployeeRequest(
-                "1234-5",
-                " Ana Silva ",
-                areaId,
-                EmployeeRole.COLABORADOR));
+                "1234-5", " Ana Silva ", areaId, cargoId));
 
         assertEquals("1234-5", response.registrationNumber());
         assertEquals("Ana Silva", response.name());
+        assertEquals("Analista de sistemas", response.cargo().name());
         assertEquals(EmployeeRole.COLABORADOR, response.role());
         verify(history).save(any(EmploymentHistory.class));
     }

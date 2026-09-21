@@ -2,8 +2,6 @@ package br.edu.unioeste.es2.sgv.employee;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -31,9 +29,9 @@ public class Employee {
     @JoinColumn(name = "area_id", nullable = false)
     private Area currentArea;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "employee_role", nullable = false, length = 20)
-    private EmployeeRole currentRole;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cargo_id", nullable = false)
+    private Cargo currentCargo;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -41,36 +39,23 @@ public class Employee {
     protected Employee() {
     }
 
-    public Employee(String registrationNumber, String name, Area currentArea, EmployeeRole currentRole) {
+    public Employee(String registrationNumber, String name, Area currentArea, Cargo currentCargo) {
         this.registrationNumber = registrationNumber;
         this.name = name;
         this.currentArea = currentArea;
-        this.currentRole = currentRole;
+        this.currentCargo = currentCargo;
         this.createdAt = OffsetDateTime.now();
     }
 
-    public UUID getId() {
-        return id;
-    }
+    public UUID getId() { return id; }
+    public String getRegistrationNumber() { return registrationNumber; }
+    public String getName() { return name; }
+    public Area getCurrentArea() { return currentArea; }
+    public Cargo getCurrentCargo() { return currentCargo; }
+    public EmployeeRole getCurrentRole() { return currentCargo.getRole(); }
 
-    public String getRegistrationNumber() {
-        return registrationNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Area getCurrentArea() {
-        return currentArea;
-    }
-
-    public EmployeeRole getCurrentRole() {
-        return currentRole;
-    }
-
-    public void changeAssignment(Area area, EmployeeRole role) {
+    public void changeAssignment(Area area, Cargo cargo) {
         this.currentArea = area;
-        this.currentRole = role;
+        this.currentCargo = cargo;
     }
 }

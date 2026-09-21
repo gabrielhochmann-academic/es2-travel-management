@@ -10,7 +10,7 @@ O projeto possui frontend React integrado à API Spring Boot, persistência em P
 
 | Capacidade | Estado |
 |---|---|
-| Cadastrar áreas e empregados | Implementado |
+| Cadastrar áreas, cargos e empregados | Implementado |
 | Validar matrícula no formato `XXXX-X` | Implementado |
 | Manter cargo, área e histórico funcional | Implementado |
 | Criar, editar, listar e cancelar viagens | Implementado |

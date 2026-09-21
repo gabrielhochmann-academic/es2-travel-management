@@ -16,7 +16,7 @@
 | RF08 | Solicitar ajustes e permitir ressubmissão | Implementado |
 | RF09 | Registrar histórico de situações com data e responsável | Implementado |
 | RF10 | Cadastrar empregado com matrícula, nome, cargo e área | Implementado |
-| RF11 | Usar os cargos Colaborador e Gestor | Implementado |
+| RF11 | Cadastrar cargos associados aos perfis Colaborador e Gestor | Implementado |
 | RF12 | Cadastrar áreas | Implementado |
 | RF13 | Preservar histórico de cargo e área do empregado | Implementado |
 | RF14 | Registrar custo de deslocamento, hospedagem e táxi | Implementado |
@@ -33,7 +33,7 @@
 | RN04 | Rascunho e Ajustes solicitados podem ser submetidos | Implementado |
 | RN05 | Somente Solicitada pode receber decisão | Implementado |
 | RN06 | Rejeição e solicitação de ajustes exigem justificativa | Implementado |
-| RN07 | Somente empregado com cargo Gestor decide uma viagem | Implementado |
+| RN07 | Somente empregado vinculado a cargo de perfil Gestor decide uma viagem | Implementado |
 | RN08 | Matrícula segue o formato `XXXX-X`, somente dígitos | Implementado |
 | RN09 | Custo total é deslocamento + hospedagem + táxi | Implementado |
 | RN10 | Custos não podem ser negativos | Implementado |
