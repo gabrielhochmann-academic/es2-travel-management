@@ -4,21 +4,28 @@ CREATE TABLE IF NOT EXISTS areas (
     created_at TIMESTAMPTZ NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS cargos (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    role VARCHAR(20) NOT NULL,
+    CONSTRAINT chk_cargo_role CHECK (role IN ('COLABORADOR', 'GESTOR'))
+);
+
 CREATE TABLE IF NOT EXISTS employees (
     id UUID PRIMARY KEY,
     registration_number VARCHAR(6) NOT NULL UNIQUE,
     name VARCHAR(150) NOT NULL,
     area_id UUID NOT NULL REFERENCES areas(id),
-    employee_role VARCHAR(20) NOT NULL,
+    cargo_id UUID NOT NULL REFERENCES cargos(id),
     created_at TIMESTAMPTZ NOT NULL,
-    CONSTRAINT chk_employee_registration CHECK (registration_number ~ '^[0-9]{4}-[0-9]$'),
-    CONSTRAINT chk_employee_role CHECK (employee_role IN ('COLABORADOR', 'GESTOR'))
+    CONSTRAINT chk_employee_registration CHECK (registration_number ~ '^[0-9]{4}-[0-9]$')
 );
 
 CREATE TABLE IF NOT EXISTS employment_history (
     id UUID PRIMARY KEY,
     employee_id UUID NOT NULL REFERENCES employees(id),
     area_id UUID NOT NULL REFERENCES areas(id),
+    cargo_id UUID NOT NULL REFERENCES cargos(id),
     role VARCHAR(20) NOT NULL,
     valid_from TIMESTAMPTZ NOT NULL,
     valid_to TIMESTAMPTZ,
@@ -38,6 +45,7 @@ CREATE TABLE IF NOT EXISTS trips (
     employee_name VARCHAR(150) NOT NULL,
     employee_registration_number VARCHAR(6) NOT NULL,
     employee_area VARCHAR(100) NOT NULL,
+    employee_cargo VARCHAR(100) NOT NULL,
     employee_role VARCHAR(20) NOT NULL,
     status VARCHAR(30) NOT NULL,
     decision_justification VARCHAR(500),
@@ -61,6 +69,7 @@ CREATE TABLE IF NOT EXISTS trip_status_history (
 );
 
 CREATE INDEX IF NOT EXISTS idx_employees_area ON employees(area_id);
+CREATE INDEX IF NOT EXISTS idx_employees_cargo ON employees(cargo_id);
 CREATE INDEX IF NOT EXISTS idx_employment_history_employee ON employment_history(employee_id, valid_from);
 CREATE INDEX IF NOT EXISTS idx_trips_status ON trips(status);
 CREATE INDEX IF NOT EXISTS idx_trips_employee ON trips(employee_id);

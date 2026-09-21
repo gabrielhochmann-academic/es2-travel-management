@@ -10,5 +10,5 @@ public record CreateEmployeeRequest(
         @NotBlank @Pattern(regexp = "\\d{4}-\\d", message = "A matrícula deve seguir o formato XXXX-X.") String registrationNumber,
         @NotBlank String name,
         @NotNull UUID areaId,
-        @NotNull EmployeeRole role) {
+        @NotNull UUID cargoId) {
 }

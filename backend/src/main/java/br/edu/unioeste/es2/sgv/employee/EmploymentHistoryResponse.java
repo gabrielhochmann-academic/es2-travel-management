@@ -6,6 +6,7 @@ import java.util.UUID;
 public record EmploymentHistoryResponse(
         UUID id,
         AreaResponse area,
+        CargoResponse cargo,
         EmployeeRole role,
         OffsetDateTime validFrom,
         OffsetDateTime validTo) {
@@ -13,6 +14,7 @@ public record EmploymentHistoryResponse(
         return new EmploymentHistoryResponse(
                 history.getId(),
                 AreaResponse.from(history.getArea()),
+                CargoResponse.from(history.getCargo()),
                 history.getRole(),
                 history.getValidFrom(),
                 history.getValidTo());

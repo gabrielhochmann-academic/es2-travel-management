@@ -14,14 +14,17 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmploymentHistoryRepository historyRepository;
     private final AreaService areaService;
+    private final CargoService cargoService;
 
     public EmployeeService(
             EmployeeRepository employeeRepository,
             EmploymentHistoryRepository historyRepository,
-            AreaService areaService) {
+            AreaService areaService,
+            CargoService cargoService) {
         this.employeeRepository = employeeRepository;
         this.historyRepository = historyRepository;
         this.areaService = areaService;
+        this.cargoService = cargoService;
     }
 
     @Transactional(readOnly = true)
@@ -39,8 +42,9 @@ public class EmployeeService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um empregado com esta matrícula.");
         }
         Area area = areaService.find(request.areaId());
-        Employee employee = employeeRepository.save(new Employee(registration, request.name().trim(), area, request.role()));
-        historyRepository.save(new EmploymentHistory(employee, area, request.role()));
+        Cargo cargo = cargoService.find(request.cargoId());
+        Employee employee = employeeRepository.save(new Employee(registration, request.name().trim(), area, cargo));
+        historyRepository.save(new EmploymentHistory(employee, area, cargo));
         return EmployeeResponse.from(employee);
     }
 
@@ -48,13 +52,15 @@ public class EmployeeService {
     public EmployeeResponse updateAssignment(UUID id, UpdateEmployeeAssignmentRequest request) {
         Employee employee = find(id);
         Area area = areaService.find(request.areaId());
-        if (employee.getCurrentArea().getId().equals(area.getId()) && employee.getCurrentRole() == request.role()) {
+        Cargo cargo = cargoService.find(request.cargoId());
+        if (employee.getCurrentArea().getId().equals(area.getId())
+                && employee.getCurrentCargo().getId().equals(cargo.getId())) {
             return EmployeeResponse.from(employee);
         }
         historyRepository.findFirstByEmployeeIdAndValidToIsNullOrderByValidFromDesc(id)
                 .ifPresent(EmploymentHistory::close);
-        employee.changeAssignment(area, request.role());
-        historyRepository.save(new EmploymentHistory(employee, area, request.role()));
+        employee.changeAssignment(area, cargo);
+        historyRepository.save(new EmploymentHistory(employee, area, cargo));
         return EmployeeResponse.from(employeeRepository.save(employee));
     }
 

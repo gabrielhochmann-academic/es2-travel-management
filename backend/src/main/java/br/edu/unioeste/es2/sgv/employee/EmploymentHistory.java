@@ -29,6 +29,10 @@ public class EmploymentHistory {
     @JoinColumn(name = "area_id", nullable = false)
     private Area area;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cargo_id", nullable = false)
+    private Cargo cargo;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private EmployeeRole role;
@@ -41,32 +45,20 @@ public class EmploymentHistory {
     protected EmploymentHistory() {
     }
 
-    public EmploymentHistory(Employee employee, Area area, EmployeeRole role) {
+    public EmploymentHistory(Employee employee, Area area, Cargo cargo) {
         this.employee = employee;
         this.area = area;
-        this.role = role;
+        this.cargo = cargo;
+        this.role = cargo.getRole();
         this.validFrom = OffsetDateTime.now();
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public Area getArea() {
-        return area;
-    }
-
-    public EmployeeRole getRole() {
-        return role;
-    }
-
-    public OffsetDateTime getValidFrom() {
-        return validFrom;
-    }
-
-    public OffsetDateTime getValidTo() {
-        return validTo;
-    }
+    public UUID getId() { return id; }
+    public Area getArea() { return area; }
+    public Cargo getCargo() { return cargo; }
+    public EmployeeRole getRole() { return role; }
+    public OffsetDateTime getValidFrom() { return validFrom; }
+    public OffsetDateTime getValidTo() { return validTo; }
 
     public void close() {
         this.validTo = OffsetDateTime.now();
