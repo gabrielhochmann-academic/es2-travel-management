@@ -1,33 +1,23 @@
-import { useState, type CSSProperties } from "react";
-import Home from "./pages/Home";
+import { useState } from "react";
 import CostsDashboard from "./pages/CostsDashboard";
+import EmployeesPage from "./pages/EmployeesPage";
+import Home from "./pages/Home";
 
-type View = "viagens" | "custos";
+type View = "viagens" | "empregados" | "custos";
 
 export default function App() {
   const [view, setView] = useState<View>("viagens");
+
   return (
     <>
-      <nav style={{
-        display: "flex", gap: 8, padding: "12px 24px",
-        borderBottom: "1px solid #e3e4dc", background: "#f9f8f2"
-      }}>
-        <button onClick={() => setView("viagens")} style={navButtonStyle(view === "viagens")}>Viagens</button>
-        <button onClick={() => setView("custos")} style={navButtonStyle(view === "custos")}>Painel de custos</button>
+      <nav className="module-nav" aria-label="Módulos do SGV">
+        <button className={view === "viagens" ? "active" : ""} onClick={() => setView("viagens")}>Viagens</button>
+        <button className={view === "empregados" ? "active" : ""} onClick={() => setView("empregados")}>Empregados</button>
+        <button className={view === "custos" ? "active" : ""} onClick={() => setView("custos")}>Custos</button>
       </nav>
-      {view === "viagens" ? <Home /> : <CostsDashboard />}
+      {view === "viagens" && <Home />}
+      {view === "empregados" && <EmployeesPage />}
+      {view === "custos" && <CostsDashboard />}
     </>
   );
-}
-
-function navButtonStyle(active: boolean): CSSProperties {
-  return {
-    padding: "8px 16px",
-    border: "1px solid " + (active ? "#226749" : "#cfd0c8"),
-    background: active ? "#226749" : "transparent",
-    color: active ? "#fff" : "#173239",
-    cursor: "pointer",
-    font: "inherit",
-    fontWeight: 600,
-  };
 }

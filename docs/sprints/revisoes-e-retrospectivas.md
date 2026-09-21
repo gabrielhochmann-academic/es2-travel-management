@@ -28,9 +28,9 @@ Este documento reúne as evidências de revisão e retrospectiva das sprints do 
 
 ## Sprint 4
 
-**Revisão:** foram integrados os custos de deslocamento, hospedagem e táxi, o cálculo do custo total e o painel com indicadores. O backend e o frontend foram compilados, e testes unitários foram adicionados às regras principais.
+**Revisão:** foram integrados os cadastros de áreas e empregados, o histórico funcional, o fluxo completo de viagens, os históricos de situação, os custos e o painel de indicadores. A interface passou a consumir a API.
 
-**Retrospectiva:** a entrega final exigiu alinhar o Jira ao código realmente disponível. Permaneceram débitos técnicos sobre integração da tela principal, fluxo completo de aprovação, cadastro e histórico de empregados, histórico de tags e qualidade automatizada.
+**Retrospectiva:** a entrega final exigiu revisar branches antigas, portar somente o trabalho útil e validar os requisitos diretamente na aplicação. A equipe adotou `main` como única linha de integração e manteve as tags como referências das sprints.
 
 ## Ações de melhoria
 

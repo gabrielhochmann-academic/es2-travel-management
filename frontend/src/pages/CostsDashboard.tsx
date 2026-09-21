@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
 
-/**
- * Painel de custos (Funcionalidade CUSTOS).
- * Endpoints consumidos (implementados no TripController):
- *   GET  /api/trips                    → lista de viagens (tabela editável)
- *   PUT  /api/trips/{id}/costs         → grava os 3 custos de uma viagem
- *   GET  /api/trips/indicators/costs   → indicadores do dashboard
- *
- * As chamadas usam caminho relativo "/api", resolvido pelo proxy do Vite (dev)
- * e pelo nginx (Docker) : não dependem de host/porta fixos.
- */
-
 type Trip = {
   id: string;
   destination: string;

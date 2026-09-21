@@ -6,41 +6,30 @@
 
 ## Objetivo
 
-Consolidar a versão final do SGV, implementar custos e indicadores, corrigir inconsistências e registrar o débito técnico remanescente.
+Consolidar a versão final do SGV com o fluxo de viagens, cadastros organizacionais, custos, indicadores e documentação atualizada.
 
 ## Funcionalidades integradas
 
 | Funcionalidade | Evidência |
 |---|---|
-| Custos de deslocamento, hospedagem e táxi | `Trip`, `UpdateCostsRequest` e `PUT /api/trips/{id}/costs` |
-| Custo total | Calculado no backend pela soma das três categorias |
-| Indicadores | Total, média, quantidades aprovadas e rejeitadas, categoria de maior peso e viagem mais cara |
-| Painel de custos | `frontend/src/pages/CostsDashboard.tsx` |
-| Persistência dos custos | PostgreSQL por JPA, com estrutura documentada em `database/trips.sql` |
+| Áreas e empregados | `GET/POST /api/areas` e `GET/POST /api/employees` |
+| Cargo e área com histórico | `PUT /api/employees/{id}/assignment` e `GET /api/employees/{id}/history` |
+| Planejamento da viagem | `GET/POST/PUT /api/trips` |
+| Fluxo de aprovação | Submissão, cancelamento, aprovação, rejeição e ajustes |
+| Histórico da viagem | Situação, responsável, justificativa e data |
+| Custos | Deslocamento, hospedagem, táxi e total calculado |
+| Indicadores | Quantidades, total, média, categorias e maior custo |
+| Interface integrada | Viagens, empregados e custos consumindo a API |
 
 ## Validação
 
-A entrega foi validada com Java 21 e Node.js 22:
-
 ```bash
 mvn --file backend/pom.xml test
-npm --prefix frontend ci
 npm --prefix frontend run build
+docker compose config
 ```
 
-O workflow `.github/workflows/ci.yml` está configurado para repetir essas verificações. A validação local foi concluída, mas a primeira execução no GitHub terminou com `startup_failure` antes da criação dos jobs. Essa limitação foi registrada no Jira e não é apresentada como CI aprovada.
-
-## Débito técnico remanescente
-
-| Débito | Classificação | Juros | Esforço | Definição de pronto |
-|---|---|---|---|---|
-| Integrar a tela principal à API | Inadvertido e imprudente | Dados exibidos podem divergir do PostgreSQL | Grande | Cadastro, listagem e transições da tela usam somente a API |
-| Completar o fluxo de aprovação | Deliberado e prudente | Cancelamento, ajustes e rastreabilidade ficam indisponíveis | Grande | Estados, transições e histórico possuem testes e persistência |
-| Modelar empregados, cargos e áreas | Deliberado e prudente | Não é possível validar gestor nem preservar contexto organizacional | Grande | Cadastros, vínculos e histórico temporal estão persistidos |
-| Corrigir baselines de tags | Inadvertido e imprudente | Recuperação histórica pode produzir uma versão diferente da declarada | Pequeno | Equipe decide e documenta a correção sem perder referências antigas |
-| Ampliar testes automatizados | Deliberado e prudente | Regressões podem chegar à `main` sem detecção suficiente | Médio | Serviços, controladores e fluxo integrado têm testes relevantes |
-
-Cada débito possui tarefa própria no Jira. Não foram registrados worklogs automaticamente porque as horas reais precisam ser informadas por cada integrante.
+Também foram validados os fluxos de cadastro, alteração de cargo e área, criação, cancelamento, ajustes, ressubmissão, aprovação, custos e históricos com PostgreSQL.
 
 ## Revisões e retrospectivas
 
@@ -48,4 +37,4 @@ O histórico consolidado está em `docs/sprints/revisoes-e-retrospectivas.md`.
 
 ## Recuperação
 
-Após a validação e integração desta documentação na `main`, a tag `sprint-4` identifica a baseline final. A tag adicional solicitada pelo professor, `techical-debt`, identifica o mesmo commit final e mantém a grafia recebida no enunciado.
+A tag `sprint-4` identifica a versão final da sprint. A tag `techical-debt` preserva a grafia solicitada no enunciado da disciplina.

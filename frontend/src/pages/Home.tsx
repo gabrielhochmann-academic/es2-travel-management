@@ -1,279 +1,393 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowUpRight,
   BadgeCheck,
   CalendarDays,
   Check,
-  ChevronRight,
   CircleDollarSign,
   ClipboardList,
   Compass,
   FileText,
   LayoutDashboard,
   MapPin,
-  MoreHorizontal,
+  Pencil,
   Plus,
   Route,
   Send,
   ShieldCheck,
-  Sparkles,
-  TimerReset,
+  Trash2,
   X,
 } from "lucide-react";
 
-type TripStatus = "Rascunho" | "Solicitada" | "Aprovada" | "Rejeitada";
+type EmployeeRole = "COLABORADOR" | "GESTOR";
+type TripStatus = "RASCUNHO" | "SOLICITADA" | "CANCELADA" | "AJUSTES_SOLICITADOS" | "APROVADA" | "REJEITADA";
+
+type Employee = {
+  id: string;
+  registrationNumber: string;
+  name: string;
+  area: { id: string; name: string };
+  role: EmployeeRole;
+};
+
+type StatusHistory = {
+  id: string;
+  status: TripStatus;
+  responsibleName: string;
+  justification: string | null;
+  changedAt: string;
+};
 
 type Trip = {
   id: string;
+  tripNumber: string;
   destination: string;
-  period: string;
+  departureDate: string;
+  returnDate: string;
   reason: string;
-  transport: string;
+  transportMode: string;
+  employeeId: string;
+  responsibleName: string;
+  employeeRegistrationNumber: string;
+  employeeArea: string;
+  employeeRole: EmployeeRole;
   status: TripStatus;
-  cost: number;
-  owner: string;
+  decisionJustification: string | null;
+  transportCost: number;
+  lodgingCost: number;
+  taxiCost: number;
+  totalCost: number;
+  statusHistory: StatusHistory[];
 };
 
-const initialTrips: Trip[] = [
-  {
-    id: "VG-024",
-    destination: "Foz do Iguaçu · PR",
-    period: "02-05 set. 2026",
-    reason: "Visita técnica",
-    transport: "Terrestre",
-    status: "Aprovada",
-    cost: 1480,
-    owner: "Equipe ES2",
-  },
-  {
-    id: "VG-023",
-    destination: "Cascavel · PR",
-    period: "28 ago. 2026",
-    reason: "Treinamento",
-    transport: "Terrestre",
-    status: "Solicitada",
-    cost: 620,
-    owner: "Equipe ES2",
-  },
-  {
-    id: "VG-022",
-    destination: "Curitiba · PR",
-    period: "10-12 set. 2026",
-    reason: "Reunião com cliente",
-    transport: "Aéreo",
-    status: "Rascunho",
-    cost: 0,
-    owner: "Equipe ES2",
-  },
-];
+type TripForm = {
+  destination: string;
+  departureDate: string;
+  returnDate: string;
+  reason: string;
+  transportMode: string;
+  employeeId: string;
+};
+
+const emptyForm: TripForm = {
+  destination: "",
+  departureDate: "",
+  returnDate: "",
+  reason: "",
+  transportMode: "Terrestre",
+  employeeId: "",
+};
+
+const statusLabel: Record<TripStatus, string> = {
+  RASCUNHO: "Rascunho",
+  SOLICITADA: "Solicitada",
+  CANCELADA: "Cancelada",
+  AJUSTES_SOLICITADOS: "Ajustes solicitados",
+  APROVADA: "Aprovada",
+  REJEITADA: "Rejeitada",
+};
 
 const statusStyle: Record<TripStatus, string> = {
-  Rascunho: "status-stamp status-draft",
-  Solicitada: "status-stamp status-requested",
-  Aprovada: "status-stamp status-approved",
-  Rejeitada: "status-stamp status-rejected",
+  RASCUNHO: "status-stamp status-draft",
+  SOLICITADA: "status-stamp status-requested",
+  CANCELADA: "status-stamp status-cancelled",
+  AJUSTES_SOLICITADOS: "status-stamp status-adjustments",
+  APROVADA: "status-stamp status-approved",
+  REJEITADA: "status-stamp status-rejected",
 };
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    maximumFractionDigits: 0,
-  }).format(value);
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
 }
 
-function formatPeriod(start: string, end: string) {
-  if (!start || !end) return "Período a definir";
-  const formatter = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
-  return `${formatter.format(new Date(`${start}T12:00:00`))} - ${formatter.format(new Date(`${end}T12:00:00`))}`;
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(new Date(`${value}T12:00:00`));
+}
+
+async function request<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    const payload = await response.json().catch(() => null);
+    throw new Error(payload?.detail || payload?.message || "A operação não pôde ser concluída.");
+  }
+  return response.json();
 }
 
 export default function Home() {
-  const [trips, setTrips] = useState<Trip[]>(initialTrips);
-  const [activeTrip, setActiveTrip] = useState("VG-024");
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [activeTripId, setActiveTripId] = useState<string | null>(null);
+  const [managerId, setManagerId] = useState("");
+  const [form, setForm] = useState<TripForm>(emptyForm);
+  const [editingTripId, setEditingTripId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [notice, setNotice] = useState("Acompanhe o fluxo de uma viagem desde o rascunho.");
-  const [form, setForm] = useState({ destination: "", start: "", end: "", reason: "", transport: "Terrestre" });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [notice, setNotice] = useState("Carregando dados do sistema.");
+  const [error, setError] = useState<string | null>(null);
 
-  const selectedTrip = trips.find((trip) => trip.id === activeTrip) ?? trips[0];
-  const metrics = useMemo(() => {
-    const approved = trips.filter((trip) => trip.status === "Aprovada");
-    return {
-      total: trips.length,
-      approved: approved.length,
-      pending: trips.filter((trip) => trip.status === "Solicitada").length,
-      forecast: trips.reduce((sum, trip) => sum + trip.cost, 0),
-    };
-  }, [trips]);
+  const managers = employees.filter((employee) => employee.role === "GESTOR");
+  const selectedTrip = trips.find((trip) => trip.id === activeTripId) ?? trips[0] ?? null;
+  const metrics = useMemo(() => ({
+    total: trips.length,
+    pending: trips.filter((trip) => trip.status === "SOLICITADA").length,
+    approved: trips.filter((trip) => trip.status === "APROVADA").length,
+    forecast: trips.reduce((sum, trip) => sum + Number(trip.totalCost), 0),
+  }), [trips]);
 
-  function updateStatus(id: string, status: TripStatus, copy: string) {
-    setTrips((current) => current.map((trip) => (trip.id === id ? { ...trip, status } : trip)));
-    setNotice(copy);
+  async function loadData() {
+    setError(null);
+    try {
+      const [tripData, employeeData] = await Promise.all([
+        request<Trip[]>("/api/trips"),
+        request<Employee[]>("/api/employees"),
+      ]);
+      setTrips(tripData);
+      setEmployees(employeeData);
+      setActiveTripId((current) => current ?? tripData[0]?.id ?? null);
+      setManagerId((current) => current || employeeData.find((employee) => employee.role === "GESTOR")?.id || "");
+      setNotice(tripData.length ? "Dados atualizados pela API." : "Cadastre empregados e registre a primeira viagem.");
+    } catch (exception) {
+      setError(exception instanceof Error ? exception.message : "Não foi possível acessar a API.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function createTrip(event: React.FormEvent) {
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  function openCreateForm() {
+    setEditingTripId(null);
+    setForm({ ...emptyForm, employeeId: employees[0]?.id ?? "" });
+    setShowForm(true);
+  }
+
+  function openEditForm(trip: Trip) {
+    setEditingTripId(trip.id);
+    setForm({
+      destination: trip.destination,
+      departureDate: trip.departureDate,
+      returnDate: trip.returnDate,
+      reason: trip.reason,
+      transportMode: trip.transportMode,
+      employeeId: trip.employeeId,
+    });
+    setShowForm(true);
+  }
+
+  async function saveTrip(event: React.FormEvent) {
     event.preventDefault();
-    if (!form.destination || !form.reason || !form.start || !form.end) {
-      setNotice("Preencha destino, motivo e período para registrar o rascunho.");
+    setSaving(true);
+    setError(null);
+    try {
+      const url = editingTripId ? `/api/trips/${editingTripId}` : "/api/trips";
+      const trip = await request<Trip>(url, {
+        method: editingTripId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      setShowForm(false);
+      setActiveTripId(trip.id);
+      setNotice(editingTripId ? `${trip.tripNumber} foi atualizada.` : `${trip.tripNumber} foi criada como rascunho.`);
+      await loadData();
+    } catch (exception) {
+      setError(exception instanceof Error ? exception.message : "Não foi possível salvar a viagem.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function runAction(path: string, body: object, successMessage: string) {
+    setSaving(true);
+    setError(null);
+    try {
+      await request<Trip>(path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      setNotice(successMessage);
+      await loadData();
+    } catch (exception) {
+      setError(exception instanceof Error ? exception.message : "Não foi possível concluir a ação.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function decide(status: "APROVADA" | "REJEITADA" | "AJUSTES_SOLICITADOS") {
+    if (!selectedTrip || !managerId) {
+      setError("Cadastre ou selecione um gestor para registrar a decisão.");
       return;
     }
-    if (new Date(form.end) < new Date(form.start)) {
-      setNotice("A data de retorno precisa ser igual ou posterior à data de saída.");
-      return;
-    }
-    const id = `VG-${String(25 + trips.length).padStart(3, "0")}`;
-    const newTrip: Trip = {
-      id,
-      destination: form.destination,
-      period: formatPeriod(form.start, form.end),
-      reason: form.reason,
-      transport: form.transport,
-      status: "Rascunho",
-      cost: 0,
-      owner: "Equipe ES2",
-    };
-    setTrips((current) => [newTrip, ...current]);
-    setActiveTrip(id);
-    setForm({ destination: "", start: "", end: "", reason: "", transport: "Terrestre" });
-    setShowForm(false);
-    setNotice(`${id} foi registrado como rascunho.`);
+    const needsJustification = status !== "APROVADA";
+    const justification = needsJustification
+      ? window.prompt(status === "REJEITADA" ? "Informe a justificativa da rejeição:" : "Informe os ajustes necessários:")
+      : null;
+    if (needsJustification && !justification?.trim()) return;
+    runAction(
+      `/api/trips/${selectedTrip.id}/decision`,
+      { status, managerId, justification },
+      `${selectedTrip.tripNumber} foi atualizada para ${statusLabel[status].toLowerCase()}.`,
+    );
   }
 
   return (
     <div className="app-shell">
       <aside className="dossier-rail" aria-label="Navegação principal">
         <div className="rail-brand">
-          <span className="route-mark" aria-label="Marca gráfica do SGV"><i /><i /></span>
-          <span>
-            <b>SGV</b>
-            <small>Sistema de Gestão<br />de Viagens</small>
-          </span>
+          <span className="route-mark" aria-label="Marca do SGV"><i /><i /></span>
+          <span><b>SGV</b><small>Sistema de Gestão<br />de Viagens</small></span>
         </div>
-
         <nav className="rail-nav">
-          <a className="active" href="#painel"><LayoutDashboard size={18} />Painel de rota</a>
+          <a className="active" href="#painel"><LayoutDashboard size={18} />Painel</a>
           <a href="#viagens"><Route size={18} />Viagens</a>
-          <a href="#fluxo"><ClipboardList size={18} />Fluxo de aprovação</a>
+          <a href="#fluxo"><ClipboardList size={18} />Aprovação</a>
           <a href="#indicadores"><CircleDollarSign size={18} />Indicadores</a>
         </nav>
-
         <div className="rail-course-note">
-          <span className="note-label">ESII · SPRINT 0</span>
-          <p>Acompanhe o registro e a situação das viagens corporativas.</p>
+          <span className="note-label">FLUXO OPERACIONAL</span>
+          <p>Rascunho, solicitação, análise, ajustes e encerramento com histórico.</p>
           <div className="course-progress"><span /></div>
-          <small>Estrutura técnica em organização</small>
+          <small>Dados persistidos no PostgreSQL</small>
         </div>
-
         <div className="rail-footer">
-          <span className="avatar">GH</span>
-          <span><b>Equipe ES2</b><small>Ambiente acadêmico</small></span>
-          <MoreHorizontal size={18} />
+          <span className="avatar">SGV</span>
+          <span><b>Gestão de viagens</b><small>Ambiente acadêmico</small></span>
         </div>
       </aside>
 
       <main className="workspace">
         <header className="topline">
-          <div className="breadcrumbs"><span>SGV</span><ChevronRight size={14} /><strong>Visão operacional</strong></div>
+          <div className="breadcrumbs"><span>SGV</span><strong>Viagens</strong></div>
           <div className="header-actions">
-            <span className="demo-pill"><Sparkles size={14} /> Sistema de Gestão de Viagens</span>
-            <button className="primary-action" onClick={() => setShowForm(true)}><Plus size={17} /> Nova viagem</button>
+            <button className="primary-action" onClick={openCreateForm} disabled={!employees.length}><Plus size={17} /> Nova viagem</button>
           </div>
         </header>
 
         <section id="painel" className="intro-grid">
           <div className="intro-copy">
-            <p className="eyebrow"><Compass size={15} /> OPERAÇÃO EM FOCO</p>
-            <h1>Planeje a próxima decisão<br /><em>antes de abrir a próxima viagem.</em></h1>
-            <p className="intro-text">Registre, acompanhe e analise as viagens corporativas em um único ambiente.</p>
+            <p className="eyebrow"><Compass size={15} /> GESTÃO DE VIAGENS</p>
+            <h1>Planejamento, decisão<br /><em>e custos em um só fluxo.</em></h1>
+            <p className="intro-text">Registre viagens vinculadas a empregados, acompanhe cada mudança de situação e mantenha os custos organizados.</p>
             <div className="intro-meta">
-              <div><span>Fluxo</span><b>Rascunho → Solicitação → Decisão</b></div>
-              <div><span>Infraestrutura</span><b>API e PostgreSQL preparados</b></div>
+              <div><span>Persistência</span><b>API Spring Boot e PostgreSQL</b></div>
+              <div><span>Rastreabilidade</span><b>Histórico de situações e responsáveis</b></div>
             </div>
           </div>
-          <div className="atlas-card" aria-label="Ilustração editorial de rotas">
-            <span className="atlas-route atlas-route-one" /><span className="atlas-route atlas-route-two" /><span className="atlas-point atlas-point-one" /><span className="atlas-point atlas-point-two" />
-            <div className="atlas-tag"><MapPin size={15} /><span>Trajetos sob<br />controle</span></div>
+          <div className="atlas-card" aria-label="Rotas de viagem">
+            <span className="atlas-route atlas-route-one" /><span className="atlas-route atlas-route-two" />
+            <span className="atlas-point atlas-point-one" /><span className="atlas-point atlas-point-two" />
+            <div className="atlas-tag"><MapPin size={15} /><span>Viagens sob<br />controle</span></div>
           </div>
         </section>
 
-        <section id="indicadores" className="metric-strip" aria-label="Indicadores de demonstração">
-          <div className="metric"><span>VIAGENS REGISTRADAS</span><b>{String(metrics.total).padStart(2, "0")}</b><small>no cenário de hoje</small></div>
-          <div className="metric"><span>PARA ANÁLISE</span><b>{String(metrics.pending).padStart(2, "0")}</b><small>aguardando decisão</small></div>
-          <div className="metric"><span>JÁ APROVADAS</span><b>{String(metrics.approved).padStart(2, "0")}</b><small>com gasto liberado</small></div>
-          <div className="metric highlighted"><span>VALOR PREVISTO</span><b>{formatCurrency(metrics.forecast)}</b><small>estimativa consolidada</small></div>
+        {error && <p className="system-error">{error}</p>}
+        {loading && <p className="notice-bar">Carregando dados...</p>}
+
+        <section id="indicadores" className="metric-strip">
+          <div className="metric"><span>VIAGENS</span><b>{metrics.total}</b><small>registros persistidos</small></div>
+          <div className="metric"><span>PARA ANÁLISE</span><b>{metrics.pending}</b><small>solicitações abertas</small></div>
+          <div className="metric"><span>APROVADAS</span><b>{metrics.approved}</b><small>fluxos concluídos</small></div>
+          <div className="metric highlighted"><span>CUSTO TOTAL</span><b>{formatCurrency(metrics.forecast)}</b><small>valor consolidado</small></div>
         </section>
 
         <section id="viagens" className="content-row">
           <div className="section-heading">
-            <div><p className="eyebrow">REGISTROS RECENTES</p><h2>Viagens em acompanhamento</h2></div>
-            <button className="text-action" onClick={() => setNotice("Selecione uma viagem para consultar os detalhes.")}>Consultar detalhes <ArrowUpRight size={16} /></button>
+            <div><p className="eyebrow">REGISTROS</p><h2>Viagens cadastradas</h2></div>
           </div>
-
           <div className="travel-ledger">
             {trips.map((trip) => (
-              <button className={`trip-row ${trip.id === activeTrip ? "selected" : ""}`} key={trip.id} onClick={() => setActiveTrip(trip.id)}>
-                <span className="trip-index">{trip.id}</span>
-                <span className="trip-place"><b>{trip.destination}</b><small>{trip.reason} · {trip.transport}</small></span>
-                <span className="trip-period"><CalendarDays size={15} />{trip.period}</span>
-                <span className={statusStyle[trip.status]}>{trip.status}</span>
-                <ChevronRight size={18} className="row-chevron" />
+              <button className={`trip-row ${trip.id === selectedTrip?.id ? "selected" : ""}`} key={trip.id} onClick={() => setActiveTripId(trip.id)}>
+                <span className="trip-index">{trip.tripNumber}</span>
+                <span className="trip-place"><b>{trip.destination}</b><small>{trip.reason} · {trip.responsibleName}</small></span>
+                <span className="trip-period"><CalendarDays size={15} />{formatDate(trip.departureDate)} a {formatDate(trip.returnDate)}</span>
+                <span className={statusStyle[trip.status]}>{statusLabel[trip.status]}</span>
+                <Route size={18} className="row-chevron" />
               </button>
             ))}
+            {!trips.length && !loading && <p className="empty-state">Nenhuma viagem cadastrada.</p>}
           </div>
         </section>
 
-        <section id="fluxo" className="detail-layout">
-          <article className="trip-detail">
-            <div className="detail-top">
-              <div><p className="eyebrow">REGISTRO SELECIONADO · {selectedTrip.id}</p><h2>{selectedTrip.destination}</h2><p>{selectedTrip.reason} · responsável: {selectedTrip.owner}</p></div>
-              <span className={statusStyle[selectedTrip.status]}>{selectedTrip.status}</span>
-            </div>
+        {selectedTrip && (
+          <section id="fluxo" className="detail-layout">
+            <article className="trip-detail">
+              <div className="detail-top">
+                <div><p className="eyebrow">{selectedTrip.tripNumber}</p><h2>{selectedTrip.destination}</h2><p>{selectedTrip.reason} · {selectedTrip.responsibleName}</p></div>
+                <span className={statusStyle[selectedTrip.status]}>{statusLabel[selectedTrip.status]}</span>
+              </div>
 
-            <div className="route-timeline" aria-label="Progresso do fluxo de aprovação">
-              {(["Rascunho", "Solicitada", "Aprovada"] as TripStatus[]).map((step, index) => {
-                const order = ["Rascunho", "Solicitada", "Aprovada", "Rejeitada"];
-                const currentIndex = order.indexOf(selectedTrip.status);
-                const complete = selectedTrip.status === "Rejeitada" ? index === 0 : currentIndex >= index;
-                return <div className={`route-step ${complete ? "complete" : ""}`} key={step}><span>{complete ? <Check size={13} /> : index + 1}</span><b>{step}</b></div>;
-              })}
-              <i />
-            </div>
+              <div className="detail-columns">
+                <div><span>Período</span><b>{formatDate(selectedTrip.departureDate)} a {formatDate(selectedTrip.returnDate)}</b></div>
+                <div><span>Transporte</span><b>{selectedTrip.transportMode}</b></div>
+                <div><span>Empregado</span><b>{selectedTrip.employeeRegistrationNumber} · {selectedTrip.employeeArea} · {selectedTrip.employeeRole}</b></div>
+              </div>
 
-            <div className="detail-columns">
-              <div><span>Período</span><b>{selectedTrip.period}</b></div>
-              <div><span>Meio de transporte</span><b>{selectedTrip.transport}</b></div>
-              <div><span>Estimativa de custo</span><b>{selectedTrip.cost ? formatCurrency(selectedTrip.cost) : "A definir"}</b></div>
-            </div>
+              <div className="decision-bar actions-wrap">
+                <div><ShieldCheck size={18} /><span><b>Ações disponíveis</b><small>As regras são validadas pela API.</small></span></div>
+                {(selectedTrip.status === "RASCUNHO" || selectedTrip.status === "AJUSTES_SOLICITADOS") && (
+                  <div className="decision-buttons">
+                    <button className="outline-action" onClick={() => openEditForm(selectedTrip)}><Pencil size={15} /> Editar</button>
+                    <button className="approve-action" disabled={saving} onClick={() => runAction(`/api/trips/${selectedTrip.id}/submit`, { employeeId: selectedTrip.employeeId }, `${selectedTrip.tripNumber} foi submetida.`)}><Send size={15} /> Submeter</button>
+                    {selectedTrip.status === "RASCUNHO" && <button className="reject-action" disabled={saving} onClick={() => runAction(`/api/trips/${selectedTrip.id}/cancel`, { employeeId: selectedTrip.employeeId }, `${selectedTrip.tripNumber} foi cancelada.`)}><Trash2 size={15} /> Cancelar</button>}
+                  </div>
+                )}
+                {selectedTrip.status === "SOLICITADA" && (
+                  <div className="manager-actions">
+                    <select value={managerId} onChange={(event) => setManagerId(event.target.value)} aria-label="Gestor responsável">
+                      <option value="">Selecione o gestor</option>
+                      {managers.map((manager) => <option key={manager.id} value={manager.id}>{manager.name}</option>)}
+                    </select>
+                    <div className="decision-buttons">
+                      <button className="approve-action" disabled={saving} onClick={() => decide("APROVADA")}><Check size={15} /> Aprovar</button>
+                      <button className="outline-action" disabled={saving} onClick={() => decide("AJUSTES_SOLICITADOS")}><Pencil size={15} /> Solicitar ajustes</button>
+                      <button className="reject-action" disabled={saving} onClick={() => decide("REJEITADA")}><X size={15} /> Rejeitar</button>
+                    </div>
+                  </div>
+                )}
+                {selectedTrip.status === "APROVADA" && <span className="ready-copy"><BadgeCheck size={17} /> Viagem aprovada</span>}
+              </div>
 
-            <div className="decision-bar">
-              <div><ShieldCheck size={18} /><span><b>Regra de negócio em demonstração</b><small>Somente viagens aprovadas poderão receber despesas.</small></span></div>
-              {selectedTrip.status === "Rascunho" && <button className="outline-action" onClick={() => updateStatus(selectedTrip.id, "Solicitada", `${selectedTrip.id} foi submetida para análise.`)}><Send size={16} /> Submeter</button>}
-              {selectedTrip.status === "Solicitada" && <div className="decision-buttons"><button className="approve-action" onClick={() => updateStatus(selectedTrip.id, "Aprovada", `${selectedTrip.id} foi aprovada.`)}><Check size={16} /> Aprovar</button><button className="reject-action" onClick={() => updateStatus(selectedTrip.id, "Rejeitada", `${selectedTrip.id} foi rejeitada.`)}><X size={16} /> Rejeitar</button></div>}
-              {selectedTrip.status === "Aprovada" && <span className="ready-copy"><BadgeCheck size={17} /> Despesas liberadas</span>}
-            </div>
-          </article>
+              <div className="history-panel">
+                <h3>Histórico da viagem</h3>
+                {selectedTrip.statusHistory.map((entry) => (
+                  <div className="history-entry" key={entry.id || `${entry.status}-${entry.changedAt}`}>
+                    <span className={statusStyle[entry.status]}>{statusLabel[entry.status]}</span>
+                    <div><b>{entry.responsibleName}</b><small>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(entry.changedAt))}</small>{entry.justification && <p>{entry.justification}</p>}</div>
+                  </div>
+                ))}
+              </div>
+            </article>
 
-          <aside className="margin-note">
-            <span className="note-label">NOTA DE MARGEM</span>
-            <h3>Recursos do sistema</h3>
-            <p>O SGV reúne o cadastro de viagens, o acompanhamento de situações e a organização das informações necessárias para análise.</p>
-            <ul><li><Check size={15} /> Frontend React</li><li><Check size={15} /> API Spring Boot preparada</li><li><Check size={15} /> PostgreSQL preparado para persistência</li><li><TimerReset size={15} /> Execução com Docker</li></ul>
-          </aside>
-        </section>
+            <aside className="margin-note">
+              <span className="note-label">CONTEXTO DA SOLICITAÇÃO</span>
+              <h3>{selectedTrip.responsibleName}</h3>
+              <p>O cargo e a área ficam registrados conforme o momento da submissão.</p>
+              <ul>
+                <li><Check size={15} /> Matrícula: {selectedTrip.employeeRegistrationNumber}</li>
+                <li><Check size={15} /> Área: {selectedTrip.employeeArea}</li>
+                <li><Check size={15} /> Cargo: {selectedTrip.employeeRole}</li>
+                <li><Check size={15} /> Custo: {formatCurrency(selectedTrip.totalCost)}</li>
+              </ul>
+            </aside>
+          </section>
+        )}
 
         <section className="notice-bar" role="status"><FileText size={18} /><span>{notice}</span></section>
       </main>
 
       {showForm && (
         <div className="modal-backdrop" role="presentation" onMouseDown={() => setShowForm(false)}>
-          <form className="trip-form" onSubmit={createTrip} onMouseDown={(event) => event.stopPropagation()}>
-            <div className="form-header"><div><p className="eyebrow">NOVO RASCUNHO</p><h2>Registrar viagem</h2></div><button type="button" className="icon-button" onClick={() => setShowForm(false)} aria-label="Fechar"><X size={18} /></button></div>
-            <label>Destino<input value={form.destination} onChange={(event) => setForm({ ...form, destination: event.target.value })} placeholder="Ex.: Foz do Iguaçu · PR" /></label>
-            <div className="form-pair"><label>Data de saída<input type="date" value={form.start} onChange={(event) => setForm({ ...form, start: event.target.value })} /></label><label>Data de retorno<input type="date" value={form.end} onChange={(event) => setForm({ ...form, end: event.target.value })} /></label></div>
-            <label>Motivo<input value={form.reason} onChange={(event) => setForm({ ...form, reason: event.target.value })} placeholder="Ex.: Visita técnica" /></label>
-            <label>Meio de transporte<select value={form.transport} onChange={(event) => setForm({ ...form, transport: event.target.value })}><option>Terrestre</option><option>Aéreo</option><option>Outro</option></select></label>
-            <p className="form-rule"><ShieldCheck size={15} /> O registro será criado como Rascunho.</p>
-            <button className="primary-action full" type="submit"><Plus size={17} /> Registrar rascunho</button>
+          <form className="trip-form" onSubmit={saveTrip} onMouseDown={(event) => event.stopPropagation()}>
+            <div className="form-header"><div><p className="eyebrow">{editingTripId ? "EDITAR VIAGEM" : "NOVA VIAGEM"}</p><h2>{editingTripId ? "Atualizar dados" : "Registrar rascunho"}</h2></div><button type="button" className="icon-button" onClick={() => setShowForm(false)} aria-label="Fechar"><X size={18} /></button></div>
+            <label>Empregado<select required disabled={Boolean(editingTripId)} value={form.employeeId} onChange={(event) => setForm({ ...form, employeeId: event.target.value })}><option value="">Selecione</option>{employees.map((employee) => <option key={employee.id} value={employee.id}>{employee.registrationNumber} · {employee.name}</option>)}</select></label>
+            <label>Destino<input required value={form.destination} onChange={(event) => setForm({ ...form, destination: event.target.value })} /></label>
+            <div className="form-pair"><label>Data de saída<input required type="date" value={form.departureDate} onChange={(event) => setForm({ ...form, departureDate: event.target.value })} /></label><label>Data de retorno<input required type="date" value={form.returnDate} onChange={(event) => setForm({ ...form, returnDate: event.target.value })} /></label></div>
+            <label>Motivo<input required value={form.reason} onChange={(event) => setForm({ ...form, reason: event.target.value })} /></label>
+            <label>Meio de transporte<select value={form.transportMode} onChange={(event) => setForm({ ...form, transportMode: event.target.value })}><option>Terrestre</option><option>Aéreo</option><option>Outro</option></select></label>
+            <button className="primary-action full" disabled={saving} type="submit"><Plus size={17} /> {saving ? "Salvando..." : "Salvar"}</button>
           </form>
         </div>
       )}
