@@ -12,7 +12,7 @@ Revisar os artefatos de planejamento, melhorar a apresentação do SGV e prepara
 
 Na linha histórica da `main`, foram integrados documentos de requisitos, User Stories, horas, burndown e melhorias visuais. A API continuou com o fluxo básico de viagens e a tela principal permaneceu com estado local.
 
-Um desenvolvimento mais amplo, com cadastro de empregados, Flyway, testes e publicação de imagens, permaneceu no PR #2 e não foi integrado à `main`. Por isso, esses itens não são declarados como parte da baseline da Sprint 1.
+Funcionalidades adicionais, incluindo cadastro de empregados, Flyway, testes e publicação de imagens, foram desenvolvidas no PR #2 durante a sprint, porém o PR permaneceu aberto no encerramento. Como essas alterações ainda não haviam sido integradas à main, elas não fazem parte da baseline oficial da Sprint 1.
 
 ## Artefatos
 
