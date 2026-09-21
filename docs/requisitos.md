@@ -72,3 +72,5 @@ O endpoint `GET /api/trips/indicators/costs` fornece:
 | RT03 | Persistência | PostgreSQL 16 |
 | RT04 | Execução integrada | Docker Compose |
 | RT05 | Credenciais | Variáveis locais em `.env`, nunca versionadas |
+| RT06 | Acesso ao banco | Usuário administrador separado do usuário da aplicação, com perfil de leitura futura |
+| RT07 | Testes | Serviços de viagens, empregados, áreas e cargos cobertos por testes unitários |

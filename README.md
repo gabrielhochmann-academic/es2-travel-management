@@ -55,6 +55,18 @@ cp .env.example .env
 
 Defina uma senha local em `.env`. O arquivo é ignorado pelo Git e não deve ser compartilhado.
 
+### Acesso ao banco
+
+O ambiente cria três perfis separados na primeira inicialização do volume:
+
+| Perfil | Uso | Permissões |
+|---|---|---|
+| `POSTGRES_ADMIN_USER` | Administração local e criação da estrutura | Administrador do banco local |
+| `POSTGRES_APP_USER` | Backend Spring Boot | Conectar, consultar, inserir, alterar e excluir dados da aplicação |
+| `POSTGRES_READONLY_USER` | Consultas locais ou relatórios | Perfil `sgv_readonly`, somente leitura |
+
+O backend utiliza somente `POSTGRES_APP_USER`. O PostgreSQL é publicado apenas em `127.0.0.1:5432`. Para aplicar a nova política de acesso em um ambiente local já existente, recrie o volume conforme o comando abaixo.
+
 Com o Docker Desktop em execução:
 
 ```bash
@@ -68,6 +80,7 @@ docker compose up --build
 | Viagens | `http://localhost:8080/api/trips` |
 | Empregados | `http://localhost:8080/api/employees` |
 | Áreas | `http://localhost:8080/api/areas` |
+| Cargos | `http://localhost:8080/api/cargos` |
 | Indicadores | `http://localhost:8080/api/trips/indicators/costs` |
 | PostgreSQL | `localhost:5432` |
 
