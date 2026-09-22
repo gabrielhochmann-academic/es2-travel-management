@@ -42,6 +42,7 @@ O projeto possui frontend React integrado à API Spring Boot, persistência em P
 | Arquitetura | [docs/arquitetura/README.md](docs/arquitetura/README.md) |
 | Encerramentos por sprint | [docs/sprints](docs/sprints) |
 | Revisões e retrospectivas | [docs/sprints/revisoes-e-retrospectivas.md](docs/sprints/revisoes-e-retrospectivas.md) |
+| Débitos técnicos | [docs/sprints/debitos-tecnicos.md](docs/sprints/debitos-tecnicos.md) |
 | Horas e burndown | [docs/Horas](docs/Horas) |
 | User Stories | [docs/User-Stories](docs/User-Stories) |
 
