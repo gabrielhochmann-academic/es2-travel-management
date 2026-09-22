@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 
-/**
- * Painel de Custos (Funcionalidade CUSTOS).
- * Endpoints consumidos:
- *   - GET  /api/trips                 -> Lista de viagens (com status e custos)
- *   - PUT  /api/trips/{id}/costs      -> Atualiza transportCost, lodgingCost, taxiCost
- *   - GET  /api/trips/indicators/costs -> Indicadores consolidados de custos
- *   - GET  /api/employees             -> Contagem total de funcionários no sistema
- */
+type Employee = {
+  id: string;
+  registrationNumber: string;
+  name: string;
+  role: string;
+};
 
 type Trip = {
   id: string;
@@ -62,6 +60,8 @@ export default function CostsDashboard() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [indicators, setIndicators] = useState<Indicators | null>(null);
   const [employeeCount, setEmployeeCount] = useState<number>(0);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [responsibleEmployeeId, setResponsibleEmployeeId] = useState("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -86,8 +86,10 @@ export default function CostsDashboard() {
       setIndicators(indicatorsData);
 
       if (employeesResp.ok) {
-        const employeesData = await employeesResp.json();
+        const employeesData: Employee[] = await employeesResp.json();
+        setEmployees(employeesData);
         setEmployeeCount(employeesData.length);
+        setResponsibleEmployeeId((current) => current || employeesData[0]?.id || "");
       }
     } catch (e) {
       setError(
@@ -132,6 +134,7 @@ export default function CostsDashboard() {
           transportCost: trip.transportCost,
           lodgingCost: trip.lodgingCost,
           taxiCost: trip.taxiCost,
+          employeeId: responsibleEmployeeId,
         }),
       });
 
@@ -141,7 +144,7 @@ export default function CostsDashboard() {
 
     // Recarrega os dados para garantir sincronia total com o backend
     await loadAll();
-  } catch (e) {
+    } catch (e) {
     setError(
       e instanceof Error ? e.message : "Não foi possível salvar os custos."
     );
@@ -182,8 +185,24 @@ export default function CostsDashboard() {
         Custo de deslocamento + hospedagem + táxi = custo total, calculado e persistido pelo backend.
       </p>
 
-      {error && <p className="custos-erro">{error} — confira se o backend está rodando.</p>}
-      {loading && <p>Carregando dados do backend…</p>}
+      <label style={{ display: "block", maxWidth: 420, marginBottom: 20 }}>
+        Responsável pela alteração
+        <select
+          value={responsibleEmployeeId}
+          onChange={(event) => setResponsibleEmployeeId(event.target.value)}
+          style={{ display: "block", width: "100%", marginTop: 6, padding: 8 }}
+        >
+          <option value="">Selecione o empregado responsável</option>
+          {employees.map((employee) => (
+            <option key={employee.id} value={employee.id}>
+              {employee.registrationNumber} · {employee.name} ({employee.role})
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {error && <p className="custos-erro">{error} : confira se o backend está rodando.</p>}
+      {loading && <p>Carregando dados do backend...</p>}
 
       {!loading && indicators && (
         <>
@@ -215,14 +234,14 @@ export default function CostsDashboard() {
           <div className="custos-indicadores">
             <div className="custos-indicador">
               <span>Categoria de maior peso</span>
-              <b>{indicators.costByCategory[0]?.category ?? "—"}</b>
+              <b>{indicators.costByCategory[0]?.category ?? "Sem dados"}</b>
               <small>
                 {formatCurrency(indicators.costByCategory[0]?.total ?? 0)} no total
               </small>
             </div>
             <div className="custos-indicador">
               <span>Viagem mais cara</span>
-              <b>{indicators.mostExpensiveTrip?.destination ?? "—"}</b>
+              <b>{indicators.mostExpensiveTrip?.destination ?? "Sem dados"}</b>
               <small>
                 {indicators.mostExpensiveTrip
                   ? formatCurrency(indicators.mostExpensiveTrip.totalCost)
@@ -311,13 +330,13 @@ export default function CostsDashboard() {
                   <td className="total">{formatCurrency(t.totalCost)}</td>
                   <td>
                     <button
-                      disabled={savingId === t.id || !editable}
+                      disabled={savingId === t.id || !editable || !responsibleEmployeeId}
                       onClick={() => saveCosts(t)}
                     >
                       {!editable
                         ? "Viagem encerrada"
                         : savingId === t.id
-                        ? "Salvando…"
+                        ? "Salvando..."
                         : "Salvar"}
                     </button>
                   </td>

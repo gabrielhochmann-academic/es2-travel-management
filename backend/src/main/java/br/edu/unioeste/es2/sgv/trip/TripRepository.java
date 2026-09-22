@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TripRepository extends JpaRepository<Trip, UUID> {
-    @Query(value = "SELECT COALESCE(MAX(CAST(SUBSTRING(trip_number, 4) AS BIGINT)), 0) + 1 FROM trips", nativeQuery = true)
+    @Query(value = "SELECT nextval('trip_number_seq')", nativeQuery = true)
     long nextTripNumber();
 
     @EntityGraph(attributePaths = {"employee"})

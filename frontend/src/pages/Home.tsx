@@ -80,9 +80,6 @@ type TripForm = {
   reason: string;
   transportMode: string;
   employeeId: string;
-  transportCost: string;
-  lodgingCost: string;
-  taxiCost: string;
 };
 
 const emptyForm: TripForm = {
@@ -92,9 +89,6 @@ const emptyForm: TripForm = {
   reason: "",
   transportMode: "Terrestre",
   employeeId: "",
-  transportCost: "0",
-  lodgingCost: "0",
-  taxiCost: "0",
 };
 
 const statusLabel: Record<TripStatus, string> = {
@@ -208,9 +202,6 @@ export default function Home() {
       reason: trip.reason,
       transportMode: trip.transportMode,
       employeeId: trip.employeeId,
-      transportCost: String(trip.transportCost ?? 0),
-      lodgingCost: String(trip.lodgingCost ?? 0),
-      taxiCost: String(trip.taxiCost ?? 0),
     });
     setShowForm(true);
   }
@@ -224,12 +215,7 @@ export default function Home() {
         throw new Error("A data de retorno deve ser igual ou posterior à data de saída.");
       }
 
-      const payload = {
-        ...form,
-        transportCost: Math.max(0, Number(form.transportCost) || 0),
-        lodgingCost: Math.max(0, Number(form.lodgingCost) || 0),
-        taxiCost: Math.max(0, Number(form.taxiCost) || 0),
-      };
+      const payload = form;
 
       const url = editingTripId ? `/api/trips/${editingTripId}` : "/api/trips";
       const trip = await request<Trip>(url, {
@@ -511,22 +497,8 @@ export default function Home() {
               </select>
             </label>
 
-            {/* Campos de Custos Detalhados */}
-            <div className="form-pair">
-              <label>Custo de deslocamento (R$)
-                <input type="number" min="0" step="0.01" value={form.transportCost} onChange={(e) => setForm({ ...form, transportCost: e.target.value })} />
-              </label>
-              <label>Custo de hospedagem (R$)
-                <input type="number" min="0" step="0.01" value={form.lodgingCost} onChange={(e) => setForm({ ...form, lodgingCost: e.target.value })} />
-              </label>
-            </div>
-
-            <label>Custo de táxi (R$)
-              <input type="number" min="0" step="0.01" value={form.taxiCost} onChange={(e) => setForm({ ...form, taxiCost: e.target.value })} />
-            </label>
-
             <div className="form-rule" style={{ marginTop: "8px", fontSize: "0.9rem" }}>
-              <ShieldCheck size={15} /> Custo total estimado: <b>{formatCurrency((Number(form.transportCost) || 0) + (Number(form.lodgingCost) || 0) + (Number(form.taxiCost) || 0))}</b>
+              <ShieldCheck size={15} /> Os custos são registrados no painel de custos após a criação da viagem.
             </div>
 
             <button className="primary-action full" disabled={saving} type="submit"><Plus size={17} /> {saving ? "Salvando..." : "Salvar"}</button>

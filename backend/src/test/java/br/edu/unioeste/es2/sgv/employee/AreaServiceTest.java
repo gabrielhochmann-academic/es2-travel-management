@@ -35,7 +35,7 @@ class AreaServiceTest {
         AreaService service = new AreaService(repository);
 
         assertEquals("Recursos Humanos", service.create(new CreateAreaRequest(" Recursos Humanos ")).name());
-        when(repository.findAll()).thenReturn(List.of(new Area("Recursos Humanos"), new Area("Informática")));
+        when(repository.findAllByOrderByNameAsc()).thenReturn(List.of(new Area("Informática"), new Area("Recursos Humanos")));
         assertEquals("Informática", service.findAll().getFirst().name());
     }
 }
