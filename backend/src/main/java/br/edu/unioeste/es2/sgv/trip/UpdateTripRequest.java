@@ -7,10 +7,15 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record UpdateTripRequest(
-        @NotNull UUID employeeId,
-        @NotBlank String destination,
-        @NotNull LocalDate departureDate,
-        @NotNull LocalDate returnDate,
-        @NotBlank String reason,
-        @NotBlank String transportMode) {
+                @NotNull(message = "O ID do funcionário é obrigatório") UUID employeeId,
+
+                @NotBlank(message = "O destino é obrigatório") String destination,
+
+                @NotNull(message = "A data de partida é obrigatória") LocalDate departureDate,
+
+                @NotNull(message = "A data de retorno é obrigatória") LocalDate returnDate,
+
+                @NotBlank(message = "O motivo da viagem é obrigatório") String reason,
+
+                @NotBlank(message = "O meio de transporte é obrigatório") String transportMode) {
 }

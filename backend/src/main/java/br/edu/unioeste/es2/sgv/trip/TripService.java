@@ -31,7 +31,22 @@ public class TripService {
 
     @Transactional(readOnly = true)
     public List<TripResponse> findAll() {
-        return tripRepository.findAll().stream().map(this::response).toList();
+        return tripRepository.findAll().stream()
+                .map(TripResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TripResponse> findByEmployee(UUID employeeId) {
+        return tripRepository.findByEmployeeIdOrderByCreatedAtDesc(employeeId).stream()
+                .map(TripResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public TripResponse findById(UUID id) {
+        Trip trip = find(id);
+        return responseWithHistory(trip);
     }
 
     @Transactional
@@ -39,6 +54,7 @@ public class TripService {
         validateDates(request.departureDate(), request.returnDate());
         Employee employee = employeeService.find(request.employeeId());
         String number = "VG-%05d".formatted(tripRepository.nextTripNumber());
+
         Trip trip = tripRepository.save(new Trip(
                 number,
                 request.destination().trim(),
@@ -47,70 +63,94 @@ public class TripService {
                 request.reason().trim(),
                 request.transportMode().trim(),
                 employee));
-        historyRepository.save(new TripStatusHistory(trip, TripStatus.RASCUNHO, employee, null));
-        return response(trip);
+
+        historyRepository.save(new TripStatusHistory(trip, TripStatus.RASCUNHO, employee, "Viagem criada"));
+        return TripResponse.from(trip);
     }
 
     @Transactional
     public TripResponse update(UUID id, UpdateTripRequest request) {
         Trip trip = find(id);
         validateOwner(trip, request.employeeId());
+
         if (trip.getStatus() != TripStatus.RASCUNHO && trip.getStatus() != TripStatus.AJUSTES_SOLICITADOS) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Somente viagens editáveis podem ser alteradas.");
         }
+
         validateDates(request.departureDate(), request.returnDate());
         trip.updateData(request);
-        return response(tripRepository.save(trip));
+        return TripResponse.from(tripRepository.save(trip));
     }
 
     @Transactional
     public TripResponse submit(UUID id, TripActionRequest request) {
         Trip trip = find(id);
         validateOwner(trip, request.employeeId());
+
         if (trip.getStatus() != TripStatus.RASCUNHO && trip.getStatus() != TripStatus.AJUSTES_SOLICITADOS) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Somente viagens em rascunho ou ajuste podem ser submetidas.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Somente viagens em rascunho ou ajuste podem ser submetidas.");
         }
+
         trip.snapshotEmployeeAssignment();
         trip.transitionTo(TripStatus.SOLICITADA, null);
-        saveTransition(trip, trip.getEmployee(), null);
-        return response(tripRepository.save(trip));
+        saveTransition(trip, trip.getEmployee(), "Viagem submetida para análise");
+        return TripResponse.from(tripRepository.save(trip));
     }
 
     @Transactional
     public TripResponse cancel(UUID id, TripActionRequest request) {
         Trip trip = find(id);
         validateOwner(trip, request.employeeId());
-        if (trip.getStatus() != TripStatus.RASCUNHO) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Somente viagens em rascunho podem ser canceladas.");
+
+        if (trip.getStatus() != TripStatus.RASCUNHO && trip.getStatus() != TripStatus.AJUSTES_SOLICITADOS) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "A viagem não pode mais ser cancelada neste estágio.");
         }
+
         trip.transitionTo(TripStatus.CANCELADA, null);
-        saveTransition(trip, trip.getEmployee(), null);
-        return response(tripRepository.save(trip));
+        saveTransition(trip, trip.getEmployee(), "Viagem cancelada pelo solicitante");
+        return TripResponse.from(tripRepository.save(trip));
     }
 
     @Transactional
     public TripResponse decide(UUID id, DecisionRequest request) {
         Trip trip = find(id);
+
         if (trip.getStatus() != TripStatus.SOLICITADA) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Somente viagens solicitadas podem receber decisão.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Somente viagens solicitadas podem receber decisão.");
         }
+
         Employee manager = employeeService.find(request.managerId());
         if (manager.getCurrentRole() != EmployeeRole.GESTOR) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Somente gestores podem decidir uma viagem.");
         }
+
         if (request.status() != TripStatus.APROVADA
                 && request.status() != TripStatus.REJEITADA
                 && request.status() != TripStatus.AJUSTES_SOLICITADOS) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A decisão informada não é permitida.");
         }
+
         String justification = normalizeJustification(request.justification());
         if ((request.status() == TripStatus.REJEITADA || request.status() == TripStatus.AJUSTES_SOLICITADOS)
                 && justification == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A justificativa é obrigatória para rejeição ou ajustes.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "A justificativa é obrigatória para rejeição ou ajustes.");
         }
+
         trip.transitionTo(request.status(), justification);
         saveTransition(trip, manager, justification);
-        return response(tripRepository.save(trip));
+        return responseWithHistory(tripRepository.save(trip));
+    }
+
+    @Transactional(readOnly = true)
+    public List<TripStatusHistoryResponse> getHistory(UUID id) {
+        find(id); // Valida existência da viagem
+        return historyRepository.findByTripIdOrderByChangedAtAsc(id).stream()
+                .map(TripStatusHistoryResponse::from)
+                .toList();
     }
 
     @Transactional
@@ -122,7 +162,7 @@ public class TripService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Os custos não podem ser alterados nesta situação.");
         }
         trip.defineCosts(request.transportCost(), request.lodgingCost(), request.taxiCost());
-        return response(tripRepository.save(trip));
+        return TripResponse.from(tripRepository.save(trip));
     }
 
     @Transactional(readOnly = true)
@@ -132,11 +172,14 @@ public class TripService {
         BigDecimal average = trips.isEmpty()
                 ? BigDecimal.ZERO
                 : grandTotal.divide(BigDecimal.valueOf(trips.size()), 2, RoundingMode.HALF_UP);
+
         long approvedCount = trips.stream().filter(trip -> trip.getStatus() == TripStatus.APROVADA).count();
         long rejectedCount = trips.stream().filter(trip -> trip.getStatus() == TripStatus.REJEITADA).count();
+
         BigDecimal totalTransport = trips.stream().map(Trip::getTransportCost).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal totalLodging = trips.stream().map(Trip::getLodgingCost).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal totalTaxi = trips.stream().map(Trip::getTaxiCost).reduce(BigDecimal.ZERO, BigDecimal::add);
+
         List<CategoryIndicatorResponse> byCategory = List.of(
                 new CategoryIndicatorResponse("Deslocamento", totalTransport),
                 new CategoryIndicatorResponse("Hospedagem", totalLodging),
@@ -144,10 +187,12 @@ public class TripService {
                 .stream()
                 .sorted((first, second) -> second.total().compareTo(first.total()))
                 .toList();
+
         TripCostSummaryResponse mostExpensive = trips.stream()
                 .max((first, second) -> first.getTotalCost().compareTo(second.getTotalCost()))
-                .map(trip -> new TripCostSummaryResponse(trip.getId(), trip.getDestination(), trip.getTotalCost()))
+                .map(TripCostSummaryResponse::from)
                 .orElse(null);
+
         return new CostIndicatorsResponse(
                 trips.size(), approvedCount, rejectedCount, grandTotal, average, byCategory, mostExpensive);
     }
@@ -156,7 +201,7 @@ public class TripService {
         historyRepository.save(new TripStatusHistory(trip, trip.getStatus(), responsible, justification));
     }
 
-    private TripResponse response(Trip trip) {
+    private TripResponse responseWithHistory(Trip trip) {
         return TripResponse.from(trip, historyRepository.findByTripIdOrderByChangedAtAsc(trip.getId()));
     }
 
@@ -167,13 +212,15 @@ public class TripService {
 
     private void validateOwner(Trip trip, UUID employeeId) {
         if (!trip.getEmployee().getId().equals(employeeId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "A ação deve ser realizada pelo solicitante da viagem.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "A ação deve ser realizada pelo solicitante da viagem.");
         }
     }
 
     private void validateDates(LocalDate departureDate, LocalDate returnDate) {
         if (returnDate.isBefore(departureDate)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A data de retorno deve ser igual ou posterior à data de saída.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "A data de retorno deve ser igual ou posterior à data de saída.");
         }
     }
 

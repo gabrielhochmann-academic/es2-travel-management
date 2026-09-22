@@ -58,6 +58,11 @@ public class TripController {
         return service.decide(id, request);
     }
 
+    @GetMapping("/{id}/history")
+    public List<TripStatusHistoryResponse> history(@PathVariable UUID id) {
+        return service.getHistory(id);
+    }
+
     @PutMapping("/{id}/costs")
     public TripResponse updateCosts(
             @PathVariable UUID id,

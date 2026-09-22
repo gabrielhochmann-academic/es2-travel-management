@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +18,7 @@ public class AreaService {
 
     @Transactional(readOnly = true)
     public List<AreaResponse> findAll() {
-        return repository.findAll().stream()
-                .sorted(Comparator.comparing(Area::getName, String.CASE_INSENSITIVE_ORDER))
+        return repository.findAllByOrderByNameAsc().stream()
                 .map(AreaResponse::from)
                 .toList();
     }

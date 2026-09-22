@@ -16,16 +16,30 @@ import {
   ShieldCheck,
   Trash2,
   X,
+  Settings,
 } from "lucide-react";
+import AdminPage from "./AdminPage";
 
 type EmployeeRole = "COLABORADOR" | "GESTOR";
 type TripStatus = "RASCUNHO" | "SOLICITADA" | "CANCELADA" | "AJUSTES_SOLICITADOS" | "APROVADA" | "REJEITADA";
+
+type Area = {
+  id: string;
+  name: string;
+};
+
+type Cargo = {
+  id: string;
+  name: string;
+  role: EmployeeRole;
+};
 
 type Employee = {
   id: string;
   registrationNumber: string;
   name: string;
-  area: { id: string; name: string };
+  area: Area;
+  cargo: Cargo;
   role: EmployeeRole;
 };
 
@@ -66,6 +80,9 @@ type TripForm = {
   reason: string;
   transportMode: string;
   employeeId: string;
+  transportCost: string;
+  lodgingCost: string;
+  taxiCost: string;
 };
 
 const emptyForm: TripForm = {
@@ -75,6 +92,9 @@ const emptyForm: TripForm = {
   reason: "",
   transportMode: "Terrestre",
   employeeId: "",
+  transportCost: "0",
+  lodgingCost: "0",
+  taxiCost: "0",
 };
 
 const statusLabel: Record<TripStatus, string> = {
@@ -96,10 +116,11 @@ const statusStyle: Record<TripStatus, string> = {
 };
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 2 }).format(value || 0);
 }
 
 function formatDate(value: string) {
+  if (!value) return "Data a definir";
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(new Date(`${value}T12:00:00`));
 }
 
@@ -113,6 +134,7 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 export default function Home() {
+  const [currentView, setCurrentView] = useState<"home" | "admin">("home");
   const [trips, setTrips] = useState<Trip[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [activeTripId, setActiveTripId] = useState<string | null>(null);
@@ -125,8 +147,13 @@ export default function Home() {
   const [notice, setNotice] = useState("Carregando dados do sistema.");
   const [error, setError] = useState<string | null>(null);
 
+  // Estados para o Modal de Decisão do Gestor (Substituindo o window.prompt)
+  const [decisionModal, setDecisionModal] = useState<"AJUSTES_SOLICITADOS" | "REJEITADA" | null>(null);
+  const [justification, setJustification] = useState("");
+
   const managers = employees.filter((employee) => employee.role === "GESTOR");
   const selectedTrip = trips.find((trip) => trip.id === activeTripId) ?? trips[0] ?? null;
+  
   const metrics = useMemo(() => ({
     total: trips.length,
     pending: trips.filter((trip) => trip.status === "SOLICITADA").length,
@@ -157,6 +184,15 @@ export default function Home() {
     loadData();
   }, []);
 
+  if (currentView === "admin") {
+    return (
+      <AdminPage
+        onBack={() => setCurrentView("home")}
+        onChanged={loadData}
+      />
+    );
+  }
+
   function openCreateForm() {
     setEditingTripId(null);
     setForm({ ...emptyForm, employeeId: employees[0]?.id ?? "" });
@@ -172,6 +208,9 @@ export default function Home() {
       reason: trip.reason,
       transportMode: trip.transportMode,
       employeeId: trip.employeeId,
+      transportCost: String(trip.transportCost ?? 0),
+      lodgingCost: String(trip.lodgingCost ?? 0),
+      taxiCost: String(trip.taxiCost ?? 0),
     });
     setShowForm(true);
   }
@@ -181,11 +220,22 @@ export default function Home() {
     setSaving(true);
     setError(null);
     try {
+      if (form.returnDate < form.departureDate) {
+        throw new Error("A data de retorno deve ser igual ou posterior à data de saída.");
+      }
+
+      const payload = {
+        ...form,
+        transportCost: Math.max(0, Number(form.transportCost) || 0),
+        lodgingCost: Math.max(0, Number(form.lodgingCost) || 0),
+        taxiCost: Math.max(0, Number(form.taxiCost) || 0),
+      };
+
       const url = editingTripId ? `/api/trips/${editingTripId}` : "/api/trips";
       const trip = await request<Trip>(url, {
         method: editingTripId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       setShowForm(false);
       setActiveTripId(trip.id);
@@ -216,21 +266,30 @@ export default function Home() {
     }
   }
 
-  function decide(status: "APROVADA" | "REJEITADA" | "AJUSTES_SOLICITADOS") {
+  async function decide(status: "APROVADA" | "REJEITADA" | "AJUSTES_SOLICITADOS") {
     if (!selectedTrip || !managerId) {
       setError("Cadastre ou selecione um gestor para registrar a decisão.");
       return;
     }
-    const needsJustification = status !== "APROVADA";
-    const justification = needsJustification
-      ? window.prompt(status === "REJEITADA" ? "Informe a justificativa da rejeição:" : "Informe os ajustes necessários:")
-      : null;
-    if (needsJustification && !justification?.trim()) return;
-    runAction(
+
+    if (status !== "APROVADA" && !decisionModal) {
+      setDecisionModal(status);
+      return;
+    }
+
+    if (status !== "APROVADA" && !justification.trim()) {
+      setError("Informe a justificativa ou o que deve ser ajustado.");
+      return;
+    }
+
+    await runAction(
       `/api/trips/${selectedTrip.id}/decision`,
-      { status, managerId, justification },
+      { status, managerId, justification: justification.trim() || null },
       `${selectedTrip.tripNumber} foi atualizada para ${statusLabel[status].toLowerCase()}.`,
     );
+
+    setDecisionModal(null);
+    setJustification("");
   }
 
   return (
@@ -245,6 +304,12 @@ export default function Home() {
           <a href="#viagens"><Route size={18} />Viagens</a>
           <a href="#fluxo"><ClipboardList size={18} />Aprovação</a>
           <a href="#indicadores"><CircleDollarSign size={18} />Indicadores</a>
+          <button 
+            onClick={() => setCurrentView("admin")} 
+            style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, padding: "10px 0", color: "inherit", textAlign: "left", width: "100%", fontSize: "inherit" }}
+          >
+            <Settings size={18} /> Administração
+          </button>
         </nav>
         <div className="rail-course-note">
           <span className="note-label">FLUXO OPERACIONAL</span>
@@ -315,7 +380,19 @@ export default function Home() {
           <section id="fluxo" className="detail-layout">
             <article className="trip-detail">
               <div className="detail-top">
-                <div><p className="eyebrow">{selectedTrip.tripNumber}</p><h2>{selectedTrip.destination}</h2><p>{selectedTrip.reason} · {selectedTrip.responsibleName}</p></div>
+                <div>
+                  <p className="eyebrow">{selectedTrip.tripNumber}</p>
+                  <h2>{selectedTrip.destination}</h2>
+                  <p>{selectedTrip.reason} · solicitante: {selectedTrip.responsibleName}</p>
+                  
+                  {/* Resumo de Custos detalhado resgatado da sua versão original */}
+                  <div className="cost-summary" style={{ marginTop: "12px", display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "0.9rem" }}>
+                    <span>Deslocamento <b>{formatCurrency(selectedTrip.transportCost)}</b></span>
+                    <span>Hospedagem <b>{formatCurrency(selectedTrip.lodgingCost)}</b></span>
+                    <span>Táxi <b>{formatCurrency(selectedTrip.taxiCost)}</b></span>
+                    <strong>Total <b>{formatCurrency(selectedTrip.totalCost)}</b></strong>
+                  </div>
+                </div>
                 <span className={statusStyle[selectedTrip.status]}>{statusLabel[selectedTrip.status]}</span>
               </div>
 
@@ -342,8 +419,8 @@ export default function Home() {
                     </select>
                     <div className="decision-buttons">
                       <button className="approve-action" disabled={saving} onClick={() => decide("APROVADA")}><Check size={15} /> Aprovar</button>
-                      <button className="outline-action" disabled={saving} onClick={() => decide("AJUSTES_SOLICITADOS")}><Pencil size={15} /> Solicitar ajustes</button>
-                      <button className="reject-action" disabled={saving} onClick={() => decide("REJEITADA")}><X size={15} /> Rejeitar</button>
+                      <button className="outline-action" disabled={saving} onClick={() => setDecisionModal("AJUSTES_SOLICITADOS")}><Pencil size={15} /> Solicitar ajustes</button>
+                      <button className="reject-action" disabled={saving} onClick={() => setDecisionModal("REJEITADA")}><X size={15} /> Rejeitar</button>
                     </div>
                   </div>
                 )}
@@ -378,15 +455,80 @@ export default function Home() {
         <section className="notice-bar" role="status"><FileText size={18} /><span>{notice}</span></section>
       </main>
 
+      {/* Modal de Decisão do Gestor (Substituiu o window.prompt) */}
+      {decisionModal && (
+        <div className="modal-backdrop">
+          <div className="trip-form">
+            <div className="form-header">
+              <div>
+                <p className="eyebrow">DECISÃO DO GESTOR</p>
+                <h2>{decisionModal === "REJEITADA" ? "Rejeitar viagem" : "Solicitar ajustes"}</h2>
+              </div>
+              <button className="icon-button" onClick={() => setDecisionModal(null)}><X size={18} /></button>
+            </div>
+            <label>
+              {decisionModal === "REJEITADA" ? "Justificativa da rejeição" : "O que deve ser ajustado?"}
+              <textarea rows={5} value={justification} onChange={(e) => setJustification(e.target.value)} placeholder="Digite os detalhes..." style={{ width: "100%", padding: "8px", marginTop: "6px", borderRadius: "4px", border: "1px solid #ccc" }} />
+            </label>
+            <button className="primary-action full" onClick={() => decide(decisionModal)}>Confirmar decisão</button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Cadastro / Edição com os custos separados */}
       {showForm && (
         <div className="modal-backdrop" role="presentation" onMouseDown={() => setShowForm(false)}>
           <form className="trip-form" onSubmit={saveTrip} onMouseDown={(event) => event.stopPropagation()}>
-            <div className="form-header"><div><p className="eyebrow">{editingTripId ? "EDITAR VIAGEM" : "NOVA VIAGEM"}</p><h2>{editingTripId ? "Atualizar dados" : "Registrar rascunho"}</h2></div><button type="button" className="icon-button" onClick={() => setShowForm(false)} aria-label="Fechar"><X size={18} /></button></div>
-            <label>Empregado<select required disabled={Boolean(editingTripId)} value={form.employeeId} onChange={(event) => setForm({ ...form, employeeId: event.target.value })}><option value="">Selecione</option>{employees.map((employee) => <option key={employee.id} value={employee.id}>{employee.registrationNumber} · {employee.name}</option>)}</select></label>
+            <div className="form-header">
+              <div>
+                <p className="eyebrow">{editingTripId ? "EDITAR VIAGEM" : "NOVA VIAGEM"}</p>
+                <h2>{editingTripId ? "Atualizar dados" : "Registrar rascunho"}</h2>
+              </div>
+              <button type="button" className="icon-button" onClick={() => setShowForm(false)} aria-label="Fechar"><X size={18} /></button>
+            </div>
+            
+            <label>Empregado
+              <select required disabled={Boolean(editingTripId)} value={form.employeeId} onChange={(event) => setForm({ ...form, employeeId: event.target.value })}>
+                <option value="">Selecione</option>
+                {employees.map((employee) => <option key={employee.id} value={employee.id}>{employee.registrationNumber} · {employee.name}</option>)}
+              </select>
+            </label>
+
             <label>Destino<input required value={form.destination} onChange={(event) => setForm({ ...form, destination: event.target.value })} /></label>
-            <div className="form-pair"><label>Data de saída<input required type="date" value={form.departureDate} onChange={(event) => setForm({ ...form, departureDate: event.target.value })} /></label><label>Data de retorno<input required type="date" value={form.returnDate} onChange={(event) => setForm({ ...form, returnDate: event.target.value })} /></label></div>
+            
+            <div className="form-pair">
+              <label>Data de saída<input required type="date" value={form.departureDate} onChange={(event) => setForm({ ...form, departureDate: event.target.value })} /></label>
+              <label>Data de retorno<input required type="date" value={form.returnDate} onChange={(event) => setForm({ ...form, returnDate: event.target.value })} /></label>
+            </div>
+
             <label>Motivo<input required value={form.reason} onChange={(event) => setForm({ ...form, reason: event.target.value })} /></label>
-            <label>Meio de transporte<select value={form.transportMode} onChange={(event) => setForm({ ...form, transportMode: event.target.value })}><option>Terrestre</option><option>Aéreo</option><option>Outro</option></select></label>
+            
+            <label>Meio de transporte
+              <select value={form.transportMode} onChange={(event) => setForm({ ...form, transportMode: event.target.value })}>
+                <option>Terrestre</option>
+                <option>Aéreo</option>
+                <option>Outro</option>
+              </select>
+            </label>
+
+            {/* Campos de Custos Detalhados */}
+            <div className="form-pair">
+              <label>Custo de deslocamento (R$)
+                <input type="number" min="0" step="0.01" value={form.transportCost} onChange={(e) => setForm({ ...form, transportCost: e.target.value })} />
+              </label>
+              <label>Custo de hospedagem (R$)
+                <input type="number" min="0" step="0.01" value={form.lodgingCost} onChange={(e) => setForm({ ...form, lodgingCost: e.target.value })} />
+              </label>
+            </div>
+
+            <label>Custo de táxi (R$)
+              <input type="number" min="0" step="0.01" value={form.taxiCost} onChange={(e) => setForm({ ...form, taxiCost: e.target.value })} />
+            </label>
+
+            <div className="form-rule" style={{ marginTop: "8px", fontSize: "0.9rem" }}>
+              <ShieldCheck size={15} /> Custo total estimado: <b>{formatCurrency((Number(form.transportCost) || 0) + (Number(form.lodgingCost) || 0) + (Number(form.taxiCost) || 0))}</b>
+            </div>
+
             <button className="primary-action full" disabled={saving} type="submit"><Plus size={17} /> {saving ? "Salvando..." : "Salvar"}</button>
           </form>
         </div>

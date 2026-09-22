@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface EmploymentHistoryRepository extends JpaRepository<EmploymentHistory, UUID> {
     List<EmploymentHistory> findByEmployeeIdOrderByValidFromDesc(UUID employeeId);
+
     Optional<EmploymentHistory> findFirstByEmployeeIdAndValidToIsNullOrderByValidFromDesc(UUID employeeId);
 }

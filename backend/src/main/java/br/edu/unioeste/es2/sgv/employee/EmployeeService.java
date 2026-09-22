@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,8 +28,7 @@ public class EmployeeService {
 
     @Transactional(readOnly = true)
     public List<EmployeeResponse> findAll() {
-        return employeeRepository.findAll().stream()
-                .sorted(Comparator.comparing(Employee::getName, String.CASE_INSENSITIVE_ORDER))
+        return employeeRepository.findAllByOrderByNameAsc().stream()
                 .map(EmployeeResponse::from)
                 .toList();
     }

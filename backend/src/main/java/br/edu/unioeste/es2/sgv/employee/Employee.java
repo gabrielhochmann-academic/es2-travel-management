@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Table(name = "employees")
 public class Employee {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false, unique = true, length = 6)
@@ -33,7 +34,7 @@ public class Employee {
     @JoinColumn(name = "cargo_id", nullable = false)
     private Cargo currentCargo;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
     protected Employee() {
@@ -47,12 +48,29 @@ public class Employee {
         this.createdAt = OffsetDateTime.now();
     }
 
-    public UUID getId() { return id; }
-    public String getRegistrationNumber() { return registrationNumber; }
-    public String getName() { return name; }
-    public Area getCurrentArea() { return currentArea; }
-    public Cargo getCurrentCargo() { return currentCargo; }
-    public EmployeeRole getCurrentRole() { return currentCargo.getRole(); }
+    public UUID getId() {
+        return id;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Area getCurrentArea() {
+        return currentArea;
+    }
+
+    public Cargo getCurrentCargo() {
+        return currentCargo;
+    }
+
+    public EmployeeRole getCurrentRole() {
+        return currentCargo.getRole();
+    }
 
     public void changeAssignment(Area area, Cargo cargo) {
         this.currentArea = area;

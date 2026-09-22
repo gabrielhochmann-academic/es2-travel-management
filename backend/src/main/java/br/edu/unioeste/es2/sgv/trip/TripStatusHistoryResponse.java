@@ -9,11 +9,11 @@ public record TripStatusHistoryResponse(
         String responsibleName,
         String justification,
         OffsetDateTime changedAt) {
-    static TripStatusHistoryResponse from(TripStatusHistory history) {
+    public static TripStatusHistoryResponse from(TripStatusHistory history) {
         return new TripStatusHistoryResponse(
                 history.getId(),
                 history.getStatus(),
-                history.getResponsible().getName(),
+                history.getResponsible() != null ? history.getResponsible().getName() : "Sistema",
                 history.getJustification(),
                 history.getChangedAt());
     }

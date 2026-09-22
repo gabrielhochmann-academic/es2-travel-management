@@ -5,7 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record DecisionRequest(
-        @NotNull TripStatus status,
-        @NotNull UUID managerId,
-        String justification) {
+                @NotNull(message = "O status da decisão é obrigatório") TripStatus status,
+
+                @NotNull(message = "O ID do gestor responsável é obrigatório") UUID managerId,
+
+                String justification) {
 }
