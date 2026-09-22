@@ -33,13 +33,13 @@ public class TripService {
 
     @Transactional(readOnly = true)
     public List<TripResponse> findAll() {
-        return tripRepository.findAll().stream().map(TripResponse::from).toList();
+        return tripRepository.findAll().stream().map(this::responseWithHistory).toList();
     }
 
     @Transactional(readOnly = true)
     public List<TripResponse> findByEmployee(UUID employeeId) {
         return tripRepository.findByEmployeeIdOrderByCreatedAtDesc(employeeId).stream()
-                .map(TripResponse::from).toList();
+                .map(this::responseWithHistory).toList();
     }
 
     @Transactional(readOnly = true)

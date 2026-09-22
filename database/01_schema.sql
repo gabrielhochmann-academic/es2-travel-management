@@ -143,6 +143,6 @@ CREATE INDEX IF NOT EXISTS idx_trip_cost_history_trip ON trip_cost_history(trip_
 -- ---------------------------------------------------------
 
 INSERT INTO cargos (name, role) VALUES
-    ('COLABORADOR', 'COLABORADOR'),
-    ('GESTOR', 'GESTOR')
+    ('Analista de Sistema', 'COLABORADOR'),
+    ('Gestor de Projetos', 'GESTOR')
 ON CONFLICT (name) DO NOTHING;

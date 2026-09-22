@@ -56,7 +56,10 @@ public class EmployeeService {
             return EmployeeResponse.from(employee);
         }
         historyRepository.findFirstByEmployeeIdAndValidToIsNullOrderByValidFromDesc(id)
-                .ifPresent(EmploymentHistory::close);
+                .ifPresent(history -> {
+                    history.close();
+                    historyRepository.saveAndFlush(history);
+                });
         employee.changeAssignment(area, cargo);
         historyRepository.save(new EmploymentHistory(employee, area, cargo));
         return EmployeeResponse.from(employeeRepository.save(employee));

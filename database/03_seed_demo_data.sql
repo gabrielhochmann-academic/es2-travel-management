@@ -12,7 +12,7 @@ SELECT '20000000-0000-0000-0000-000000000001', '1001-1', 'Ana Martins',
        a.id, c.id
 FROM areas a
 CROSS JOIN cargos c
-WHERE a.name = 'Tecnologia' AND c.name = 'COLABORADOR'
+WHERE a.name = 'Tecnologia' AND c.name = 'Analista de Sistema'
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO employees (id, registration_number, name, area_id, cargo_id)
@@ -20,7 +20,7 @@ SELECT '20000000-0000-0000-0000-000000000002', '1002-2', 'Bruno Almeida',
        a.id, c.id
 FROM areas a
 CROSS JOIN cargos c
-WHERE a.name = 'Financeiro' AND c.name = 'GESTOR'
+WHERE a.name = 'Financeiro' AND c.name = 'Gestor de Projetos'
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO employees (id, registration_number, name, area_id, cargo_id)
@@ -28,7 +28,7 @@ SELECT '20000000-0000-0000-0000-000000000003', '1003-3', 'Carla Souza',
        a.id, c.id
 FROM areas a
 CROSS JOIN cargos c
-WHERE a.name = 'Tecnologia' AND c.name = 'COLABORADOR'
+WHERE a.name = 'Tecnologia' AND c.name = 'Estagiária de Desenvolvimento de Software'
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO employment_history (id, employee_id, area_id, cargo_id)
