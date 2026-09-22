@@ -25,7 +25,7 @@ Funcionalidades adicionais, incluindo cadastro de empregados, Flyway, testes e p
 
 ## Limitação da tag histórica
 
-A tag `sprint-1` é leve e foi criada depois do período da sprint. Ela aponta para um commit da `main`, mas não segue a convenção atual de tag anotada. A referência foi preservada para não reescrever o histórico e sua regularização está registrada como débito técnico.
+A tag `sprint-1` foi criada depois do período da sprint e sua limitação histórica foi registrada no Jira. A rastreabilidade dos débitos de tags foi consolidada posteriormente na tarefa ES2-53 e na tag `techical-debt`.
 
 ## Recuperação
 

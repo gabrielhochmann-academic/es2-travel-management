@@ -14,7 +14,7 @@ O SGV possui três serviços executados pelo Docker Compose: interface web, API 
 |---|---|---|---|
 | **Interface web** | React, TypeScript, Vite e Nginx | Viagens, empregados, aprovações, custos e indicadores | `http://localhost:5173` |
 | **API** | Spring Boot e Java 21 | Regras de negócio e endpoints REST | `http://localhost:8080` |
-| **Banco de dados** | PostgreSQL 16 | Viagens, empregados, áreas e históricos | `localhost:5432` |
+| **Banco de dados** | PostgreSQL 16 | Viagens, empregados, áreas, cargos, custos e históricos | `localhost:5432` |
 | **Orquestração** | Docker Compose | Construção e execução integrada | - |
 
 ## Caminho da informação
@@ -43,7 +43,7 @@ A interface consome a API para todas as operações. As mudanças feitas nas tel
 
 ## Persistência e recuperação
 
-O volume `postgres_data` preserva os dados entre reinicializações. A estrutura inicial está em [`database/trips.sql`](../../database/trips.sql).
+O volume `postgres_data` preserva os dados entre reinicializações. A estrutura inicial está em [`database/01_schema.sql`](../../database/01_schema.sql) e os perfis de acesso em [`database/02_roles_and_permissions.sh`](../../database/02_roles_and_permissions.sh).
 
 | Necessidade | Mecanismo |
 |---|---|

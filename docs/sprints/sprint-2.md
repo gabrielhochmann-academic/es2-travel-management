@@ -36,4 +36,4 @@ Na linha histórica da `main`, a API passou a permitir submissão, aprovação e
 
 ## Limitação da tag histórica
 
-A tag `sprint-2` existente aponta para o commit `4d96156`, anterior aos artefatos e às alterações atribuídas à Sprint 2. Ela não constitui uma baseline confiável da entrega. A tag foi preservada para não reescrever o histórico sem decisão explícita da equipe. A correção dessa referência está registrada como débito técnico.
+A tag `sprint-2` possui uma limitação histórica de baseline, registrada no Jira. A decisão de preservar referências históricas e consolidar a rastreabilidade foi registrada na tarefa ES2-53 e na tag `techical-debt`.
