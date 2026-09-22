@@ -6,11 +6,6 @@ set -eu
 : "${POSTGRES_READONLY_USER:?Defina POSTGRES_READONLY_USER no arquivo .env}"
 : "${POSTGRES_READONLY_PASSWORD:?Defina POSTGRES_READONLY_PASSWORD no arquivo .env}"
 
-app_user=$(printf '%s' "$POSTGRES_APP_USER" | sed 's/"/""/g')
-app_password=$(printf '%s' "$POSTGRES_APP_PASSWORD" | sed "s/'/''/g")
-readonly_user=$(printf '%s' "$POSTGRES_READONLY_USER" | sed 's/"/""/g')
-readonly_password=$(printf '%s' "$POSTGRES_READONLY_PASSWORD" | sed "s/'/''/g")
-
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
     REVOKE ALL ON DATABASE "$POSTGRES_DB" FROM PUBLIC;
     REVOKE CREATE ON SCHEMA public FROM PUBLIC;
@@ -23,24 +18,24 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'sgv_readonly') THEN
             CREATE ROLE sgv_readonly NOLOGIN;
         END IF;
-        IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${app_user}') THEN
-            CREATE ROLE "${app_user}" LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT PASSWORD '${app_password}';
+        IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '$POSTGRES_APP_USER') THEN
+            EXECUTE format('CREATE ROLE %I WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT PASSWORD %L', '$POSTGRES_APP_USER', '$POSTGRES_APP_PASSWORD');
         END IF;
-        IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${readonly_user}') THEN
-            CREATE ROLE "${readonly_user}" LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT PASSWORD '${readonly_password}';
+        IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '$POSTGRES_READONLY_USER') THEN
+            EXECUTE format('CREATE ROLE %I WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT PASSWORD %L', '$POSTGRES_READONLY_USER', '$POSTGRES_READONLY_PASSWORD');
         END IF;
     END
     \$\$;
 
     GRANT CONNECT ON DATABASE "$POSTGRES_DB" TO sgv_application, sgv_readonly;
     GRANT USAGE ON SCHEMA public TO sgv_application, sgv_readonly;
-    GRANT sgv_application TO "${app_user}";
-    GRANT sgv_readonly TO "${readonly_user}";
+    GRANT sgv_application TO "$POSTGRES_APP_USER";
+    GRANT sgv_readonly TO "$POSTGRES_READONLY_USER";
 
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public
+    ALTER DEFAULT PRIVILEGES FOR ROLE "$POSTGRES_USER" IN SCHEMA public
         GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO sgv_application;
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public
+    ALTER DEFAULT PRIVILEGES FOR ROLE "$POSTGRES_USER" IN SCHEMA public
         GRANT SELECT ON TABLES TO sgv_readonly;
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public
+    ALTER DEFAULT PRIVILEGES FOR ROLE "$POSTGRES_USER" IN SCHEMA public
         GRANT USAGE, SELECT ON SEQUENCES TO sgv_application;
 EOSQL
