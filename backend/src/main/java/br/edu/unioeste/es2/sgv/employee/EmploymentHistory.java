@@ -2,8 +2,6 @@ package br.edu.unioeste.es2.sgv.employee;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,10 +32,6 @@ public class EmploymentHistory {
     @JoinColumn(name = "cargo_id", nullable = false)
     private Cargo cargo;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private EmployeeRole role;
-
     @Column(nullable = false)
     private OffsetDateTime validFrom;
 
@@ -50,14 +44,12 @@ public class EmploymentHistory {
         this.employee = employee;
         this.area = area;
         this.cargo = cargo;
-        this.role = cargo.getRole();
         this.validFrom = OffsetDateTime.now();
     }
 
     public UUID getId() { return id; }
     public Area getArea() { return area; }
     public Cargo getCargo() { return cargo; }
-    public EmployeeRole getRole() { return role; }
     public OffsetDateTime getValidFrom() { return validFrom; }
     public OffsetDateTime getValidTo() { return validTo; }
 
