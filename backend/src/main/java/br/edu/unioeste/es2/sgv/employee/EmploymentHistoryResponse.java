@@ -11,11 +11,12 @@ public record EmploymentHistoryResponse(
         OffsetDateTime validFrom,
         OffsetDateTime validTo) {
     static EmploymentHistoryResponse from(EmploymentHistory history) {
+        CargoResponse cargo = CargoResponse.from(history.getCargo());
         return new EmploymentHistoryResponse(
                 history.getId(),
                 AreaResponse.from(history.getArea()),
-                CargoResponse.from(history.getCargo()),
-                history.getRole(),
+                cargo,
+                cargo.role(),
                 history.getValidFrom(),
                 history.getValidTo());
     }
