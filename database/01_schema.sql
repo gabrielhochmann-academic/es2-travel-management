@@ -4,6 +4,8 @@
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+CREATE SEQUENCE IF NOT EXISTS trip_number_seq START WITH 1 INCREMENT BY 1;
+
 -- ---------------------------------------------------------
 -- Cadastros base
 -- ---------------------------------------------------------
@@ -98,6 +100,21 @@ CREATE TABLE IF NOT EXISTS trip_status_history (
     CONSTRAINT chk_trip_history_status CHECK (status IN ('RASCUNHO', 'SOLICITADA', 'CANCELADA', 'AJUSTES_SOLICITADOS', 'APROVADA', 'REJEITADA'))
 );
 
+CREATE TABLE IF NOT EXISTS trip_cost_history (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    trip_id UUID NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+    responsible_employee_id UUID NOT NULL REFERENCES employees(id),
+    transport_cost NUMERIC(12, 2) NOT NULL,
+    lodging_cost NUMERIC(12, 2) NOT NULL,
+    taxi_cost NUMERIC(12, 2) NOT NULL,
+    changed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT chk_cost_history_values CHECK (transport_cost >= 0 AND lodging_cost >= 0 AND taxi_cost >= 0)
+);
+
+SELECT setval('trip_number_seq', GREATEST(COALESCE(MAX(CAST(SUBSTRING(trip_number, 4) AS BIGINT)), 1), 1),
+              COALESCE(MAX(CAST(SUBSTRING(trip_number, 4) AS BIGINT)), 0) > 0)
+FROM trips;
+
 -- ---------------------------------------------------------
 -- Índices
 -- ---------------------------------------------------------
@@ -116,6 +133,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_employment_history_open_period
 CREATE INDEX IF NOT EXISTS idx_trips_status ON trips(status);
 CREATE INDEX IF NOT EXISTS idx_trips_employee ON trips(employee_id);
 CREATE INDEX IF NOT EXISTS idx_trip_status_history_trip ON trip_status_history(trip_id, changed_at);
+CREATE INDEX IF NOT EXISTS idx_trip_cost_history_trip ON trip_cost_history(trip_id, changed_at);
 
 -- ---------------------------------------------------------
 -- Seed: os únicos dois cargos que a especificação permite.

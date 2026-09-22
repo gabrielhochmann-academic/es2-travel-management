@@ -39,7 +39,7 @@ class CargoServiceTest {
         assertEquals(EmployeeRole.COLABORADOR, created.role());
 
         Cargo gestor = new Cargo("Gestor de viagens", EmployeeRole.GESTOR);
-        when(repository.findAll()).thenReturn(List.of(gestor, new Cargo("Analista", EmployeeRole.COLABORADOR)));
+        when(repository.findAllByOrderByNameAsc()).thenReturn(List.of(new Cargo("Analista", EmployeeRole.COLABORADOR), gestor));
         assertEquals("Analista", service.findAll().getFirst().name());
     }
 }

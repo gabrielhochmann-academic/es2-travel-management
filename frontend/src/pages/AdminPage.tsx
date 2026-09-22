@@ -103,13 +103,16 @@ export default function AdminPage({
     e.preventDefault();
     setError(null);
     try {
-      const url = editingId ? `/api/employees/${editingId}` : "/api/employees";
+      const url = editingId ? `/api/employees/${editingId}/assignment` : "/api/employees";
       const method = editingId ? "PUT" : "POST";
+      const body = editingId
+        ? { cargoId: employeeForm.cargoId, areaId: employeeForm.areaId }
+        : employeeForm;
 
       await request<Employee>(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(employeeForm),
+        body: JSON.stringify(body),
       });
 
       setEmployeeForm({
@@ -216,8 +219,8 @@ export default function AdminPage({
       {tab === "empregados" && (
         <section className="admin-grid">
           <form className="admin-card" onSubmit={handleSaveEmployee}>
-            <p className="eyebrow">{editingId ? "EDITAR CADASTRO" : "NOVO CADASTRO"}</p>
-            <h2>{editingId ? "Editar empregado" : "Empregado"}</h2>
+            <p className="eyebrow">{editingId ? "ALTERAR ALOCAÇÃO" : "NOVO CADASTRO"}</p>
+            <h2>{editingId ? "Alterar cargo e área" : "Empregado"}</h2>
             
             <label>
               Matrícula
@@ -272,8 +275,8 @@ export default function AdminPage({
             </label>
 
             <div style={{ display: "flex", gap: 8 }}>
-              <button className="primary-action full" type="submit">
-                <Plus size={16} /> {editingId ? "Salvar alterações" : "Cadastrar empregado"}
+                <button className="primary-action full" type="submit">
+                <Plus size={16} /> {editingId ? "Salvar alocação" : "Cadastrar empregado"}
               </button>
               {editingId && (
                 <button
