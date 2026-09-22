@@ -73,6 +73,8 @@ Com o Docker Desktop em execução:
 docker compose up --build
 ```
 
+Em um banco novo, o Docker também executa automaticamente `database/03_seed_demo_data.sql`, criando áreas, cargos, empregados, viagens, históricos e custos válidos para demonstração. O seed é idempotente e faz parte da inicialização do volume. Para reaplicá-lo do zero, recrie o volume local:
+
 | Serviço | Endereço |
 |---|---|
 | Interface | `http://localhost:5173` |
